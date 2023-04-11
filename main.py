@@ -5,6 +5,8 @@ import lib.actionbar as actionbar
 import lib.manager as manager
 from datetime import datetime
 import lib.style as style
+import sys
+import os
 
 # pygame setup
 pygame.init()
@@ -31,7 +33,7 @@ def openAppOnMemory(file, name):
         # CLOSE THE APP IN CASE OF AN ERROR
         man.closeApp(name.split('.')[0])
 
-        man.alert('There\'s been an error loading the app', m=man)
+        man.alert('Error', 'The app does not exist', m=man)
 
 man.onOpen = openAppOnMemory
 man.screen = screen
@@ -91,5 +93,3 @@ while running:
     man.update()
 
     clock.tick(60)  # limits FPS to 60
-
-pygame.quit()

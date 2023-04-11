@@ -13,7 +13,10 @@ appSizeGoal = 0.0
 
 isInApp = False
 
-currentAlert = ''
+currentAlert = ""
+
+running = True
+
 
 def openApp(name):
     global openApps
@@ -25,18 +28,19 @@ def openApp(name):
     openApps.clear()
     appsMemory.clear()
 
-    file = './data/apps/' + name
+    file = "./data/apps/" + name
 
     appSizeGoal = 1
 
-    openApps.append(name.split('.')[0])
+    openApps.append(name.split(".")[0])
 
     isInApp = True
 
     if onOpen != None:
         onOpen(file, name)
-    
+
     style.RESET()
+
 
 def update():
     global appSize
@@ -44,10 +48,11 @@ def update():
     global screen
     global s
     if appSize < appSizeGoal:
-        appSize += (appSizeGoal - appSize) / 2
-    
+        appSize += (appSizeGoal - appSize) / 3
+
     if appSize > appSizeGoal:
-        appSize -= (appSize - appSizeGoal) / 2
+        appSize -= (appSize - appSizeGoal) / 3
+
 
 def closeApp(name):
     global openApps
@@ -60,6 +65,7 @@ def closeApp(name):
 
     style.RESET()
 
+
 def closeAllApps():
     global openApps
     global isInApp
@@ -71,22 +77,25 @@ def closeAllApps():
 
     style.RESET()
 
-def alert(text, m=None):
+
+def alert(title, text, m=None):
     global currentAlert
     global isInApp
-    currentAlert = text
+    currentAlert = text + ";" + title
     if m is not None:
         style.set_manager(m)
-    
+
     isInApp = True
+
 
 def closeAlert():
     global currentAlert
     global isInApp
-    currentAlert = ''
-    
+    currentAlert = ""
+
     isInApp = False
 
+
 def renderAlert():
-    if currentAlert != '':
-        style.alert(currentAlert)
+    if currentAlert != "":
+        style.alert(currentAlert.split(";")[0], currentAlert.split(";")[1])

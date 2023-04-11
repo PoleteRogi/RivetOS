@@ -9,11 +9,11 @@ BLUE = (63, 136, 197)
 foreground = BLACK
 background = WHITE
 
-TEXT_LIGHT = './assets/fonts/ProximaNova/Proxima Nova Light.otf'
-TEXT_REGULAR = './assets/fonts/ProximaNova/Proxima Nova Reg.otf'
-TEXT_SEMIBOLD = './assets/fonts/ProximaNova/Proxima Nova Semibold.otf'
-TEXT_BOLD = './assets/fonts/ProximaNova/Proxima Nova Bold.otf'
-TEXT_BLACK = './assets/fonts/ProximaNova/Proxima Nova Black.otf'
+TEXT_LIGHT = "./assets/fonts/ProximaNova/Proxima Nova Light.otf"
+TEXT_REGULAR = "./assets/fonts/ProximaNova/Proxima Nova Reg.otf"
+TEXT_SEMIBOLD = "./assets/fonts/ProximaNova/Proxima Nova Semibold.otf"
+TEXT_BOLD = "./assets/fonts/ProximaNova/Proxima Nova Bold.otf"
+TEXT_BLACK = "./assets/fonts/ProximaNova/Proxima Nova Black.otf"
 
 # VARIABLES
 primary = GREEN
@@ -23,16 +23,18 @@ weight = TEXT_REGULAR
 padding = [20, 20, 20, 20]
 margin = [5, 10]
 
-xIndex = padding[0] 
+xIndex = padding[0]
 yIndex = padding[1]
 
-direction = 'x'
+direction = "x"
 
 manager = None
+
 
 def set_manager(m):
     global manager
     manager = m
+
 
 def RESET():
     global foreground
@@ -54,7 +56,8 @@ def RESET():
     padding = [20, 20, 20, 20]
     margin = [5, 10]
 
-    direction = 'x'
+    direction = "x"
+
 
 def initApp(m):
     global manager
@@ -62,32 +65,47 @@ def initApp(m):
     global yIndex
     global surface
 
-    xIndex = padding[0] 
+    xIndex = padding[0]
     yIndex = padding[1]
 
     manager = m
 
-    pygame.draw.rect(manager.screen, background, (400 / 2 - 400 * manager.appSize / 2, 800 / 2 - 800 * manager.appSize / 2, 400 * manager.appSize, 800 * manager.appSize))
+    pygame.draw.rect(
+        manager.screen,
+        background,
+        (
+            400 / 2 - 400 * manager.appSize / 2,
+            800 / 2 - 800 * manager.appSize / 2,
+            400 * manager.appSize,
+            800 * manager.appSize,
+        ),
+    )
+
 
 def set_direction(dir):
     global direction
     direction = dir
 
+
 def set_primary(color):
     global primary
     primary = color
+
 
 def set_weight(w):
     global weight
     weight = w
 
+
 def set_background(color):
     global background
     background = color
 
+
 def set_foreground(color):
     global foreground
     foreground = color
+
 
 def label(text):
     global xIndex
@@ -95,7 +113,7 @@ def label(text):
 
     if manager.isInApp == False:
         return
-    
+
     normalFont = pygame.font.Font(weight, 16)
 
     text = normalFont.render(text, True, foreground)
@@ -106,10 +124,11 @@ def label(text):
 
     manager.screen.blit(text, textRect)
 
-    if direction == 'x':
+    if direction == "x":
         xIndex += textRect.width + margin[0]
-    if direction == 'y':
+    if direction == "y":
         yIndex += textRect.height + margin[1]
+
 
 def titleBar(text, color=primary):
     global xIndex
@@ -152,7 +171,14 @@ def titleBar(text, color=primary):
     xIndex = padding[0]
     yIndex = 75 + padding[1]
 
-def alert(text):
+
+def alert(text, title):
+    events = pygame.event.get()
+
+    for event in events:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            manager.closeAlert()
+
     backgroundAlert = pygame.Surface((400, 800), pygame.SRCALPHA)
 
     backgroundAlert.fill((0, 0, 0))
@@ -161,8 +187,8 @@ def alert(text):
 
     manager.screen.blit(backgroundAlert, (0, 0))
 
-    width = 300
-    height = 200
+    width = 200
+    height = 100
 
     x = (400 / 2) - (width / 2)
     y = (800 / 2) - (height / 2)
@@ -170,10 +196,18 @@ def alert(text):
     pygame.draw.rect(manager.screen, WHITE, (x, y, width, height), width, 10)
 
     normalFont = pygame.font.Font(TEXT_REGULAR, 16)
+    boldFont = pygame.font.Font(TEXT_BOLD, 24)
+
+    title = boldFont.render(title, True, foreground)
+
+    titleRect = title.get_rect()
+    titleRect.topleft = (x + 20, y + 20)
+
+    manager.screen.blit(title, titleRect)
 
     t = normalFont.render(text, True, foreground)
 
-    textRect = t.get_rect()
-    textRect.center = (400 // 2, 800 // 2)
+    tRect = t.get_rect()
+    tRect.topleft = (x + 20, y + 20 + 24 + 10)
 
-    manager.screen.blit(t, textRect)
+    manager.screen.blit(t, tRect)
