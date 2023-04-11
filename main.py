@@ -2,6 +2,7 @@
 import pygame
 import lib.home as home
 import lib.actionbar as actionbar
+import lib.keyboard as keyboard
 import lib.manager as manager
 from datetime import datetime
 import lib.style as style
@@ -29,7 +30,7 @@ def openAppOnMemory(file, name):
         man.appsMemory.append(content)
 
         exec(content)
-    except:
+    except Exception as e:
         # CLOSE THE APP IN CASE OF AN ERROR
         man.closeApp(name.split('.')[0])
 
@@ -66,6 +67,7 @@ while running:
 
         index += 1
 
+    keyboard.render(man)
     actionbar.render(man)
 
     if man.isInApp == False:
@@ -87,9 +89,10 @@ while running:
 
         screen.blit(timeText, timeTextRect)
 
+
     # flip() the display to put your work on screen
     pygame.display.flip()
 
     man.update()
 
-    clock.tick(60)  # limits FPS to 60
+    # clock.tick(man.fps)  # limits FPS to 60

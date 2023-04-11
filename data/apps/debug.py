@@ -1,5 +1,8 @@
 from lib.style import *
 
+def click(m):
+    m.alert('Test', 'XD')
+
 def debug(m):
     set_direction('y')
 
@@ -7,5 +10,10 @@ def debug(m):
 
     title = titleBar('Debug')
 
-    text = label('This is a label!')
-    text2 = label('This is a label!')
+    inpt = input('Input', 100, None)
+
+    text = label('Label')
+
+    btn = button('Button', None)
+
+    dialogBtn = button('Open dialog', click)

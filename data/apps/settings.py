@@ -7,5 +7,3 @@ def settings(m):
     initApp(m)
 
     title = titleBar('Settings', color=BLACK)
-
-    text = label('Lassy On Python!')

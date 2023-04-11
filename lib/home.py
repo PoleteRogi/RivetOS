@@ -15,8 +15,6 @@ alpha = 1
 wallpaperScale = 1.5
 iconScale = 20
 
-sin = 0
-
 wallpaperScaleGoal = 1
 iconScaleGoal = 20
 
@@ -24,6 +22,8 @@ firstFrame = True
 
 appIcons = []
 
+normalFont = None
+lockscreenTimeFont = None
 
 def appslist():
     appfileopen = open("./data/apps.json")
@@ -35,26 +35,26 @@ def appslist():
 
 apps = appslist()
 
-
 def render(screen, events, manager):
     global alpha
     global wallpaperScale
     global wallpaperScaleGoal
     global wallpaperScaled
     global wallpaper
-    global sin
     global isLockscreen
     global apps
     global firstFrame
     global iconScale
     global iconScaleGoal
+    global lockscreenTimeFont
+    global normalFont
 
     if firstFrame:
         firstFrame = False
         wallpaper = pygame.image.load("./assets/wallpaper.png").convert()
         wallpaper = pygame.transform.scale(wallpaper, (400, 800))
-
-    sin += 0.01
+        normalFont = pygame.font.Font(style.TEXT_REGULAR, 16)
+        lockscreenTimeFont = pygame.font.Font(style.TEXT_SEMIBOLD, 168)
 
     s = pygame.Surface(
         (400, 800), pygame.SRCALPHA
@@ -78,7 +78,6 @@ def render(screen, events, manager):
     if iconScale < iconScaleGoal:
         iconScale += (iconScaleGoal - iconScale) / 5
 
-    # wallpaperScale = wallpaperScale * (((math.sin(sin) + 1) / 2) / 10) + 1
     wallpaperScaled = pygame.transform.scale(
         wallpaper, (400 * wallpaperScale, 800 * wallpaperScale)
     )
@@ -91,8 +90,6 @@ def render(screen, events, manager):
     )
 
     if isLockscreen:
-        lockscreenTimeFont = pygame.font.Font(style.TEXT_SEMIBOLD, 168)
-
         now = datetime.now()
 
         hours = now.strftime("%H")
@@ -176,8 +173,6 @@ def render(screen, events, manager):
         image.blit(rect, (0, 0), None, pygame.BLEND_RGBA_MIN)
 
         s.blit(image, (x, y))
-
-        normalFont = pygame.font.Font(style.TEXT_REGULAR, 16)
 
         appNameText = normalFont.render(name, True, style.foreground)
 
