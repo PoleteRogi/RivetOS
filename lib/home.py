@@ -140,14 +140,13 @@ def render(screen, events, manager):
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
 
-        if x+iconsize > mouse[0] > x and y+iconsize > mouse[1] > y:
+        if x+iconsize > mouse[0] > x and y+iconsize > mouse[1] > y and manager.isInApp == False:
             iconsize = 83
             x -= 5
             y -= 5
             if click[0] == 1:
-                if manager.isInApp == False:
-                    # OPEN APP
-                    manager.openApp(file)
+                # OPEN APP
+                manager.openApp(file)
 
         else:
             iconsize = 73

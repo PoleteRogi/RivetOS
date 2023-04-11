@@ -31,6 +31,8 @@ def openAppOnMemory(file, name):
         # CLOSE THE APP IN CASE OF AN ERROR
         man.closeApp(name.split('.')[0])
 
+        man.alert('There\'s been an error loading the app', m=man)
+
 man.onOpen = openAppOnMemory
 man.screen = screen
 
@@ -47,6 +49,9 @@ while running:
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
 
+    if man.isInApp == False:
+        style.RESET()
+
     # RENDER
     home.render(screen, events, man)
 
@@ -60,6 +65,11 @@ while running:
         index += 1
 
     actionbar.render(man)
+
+    if man.isInApp == False:
+        style.RESET()
+
+    man.renderAlert()
 
     normalFont = pygame.font.Font(style.TEXT_REGULAR, 16)
 

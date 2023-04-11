@@ -13,6 +13,8 @@ appSizeGoal = 0.0
 
 isInApp = False
 
+currentAlert = ''
+
 def openApp(name):
     global openApps
     global onOpen
@@ -68,3 +70,23 @@ def closeAllApps():
     appSizeGoal = 0.0
 
     style.RESET()
+
+def alert(text, m=None):
+    global currentAlert
+    global isInApp
+    currentAlert = text
+    if m is not None:
+        style.set_manager(m)
+    
+    isInApp = True
+
+def closeAlert():
+    global currentAlert
+    global isInApp
+    currentAlert = ''
+    
+    isInApp = False
+
+def renderAlert():
+    if currentAlert != '':
+        style.alert(currentAlert)

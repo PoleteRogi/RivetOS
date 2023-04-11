@@ -30,6 +30,10 @@ direction = 'x'
 
 manager = None
 
+def set_manager(m):
+    global manager
+    manager = m
+
 def RESET():
     global foreground
     global background
@@ -147,3 +151,29 @@ def titleBar(text, color=primary):
 
     xIndex = padding[0]
     yIndex = 75 + padding[1]
+
+def alert(text):
+    backgroundAlert = pygame.Surface((400, 800), pygame.SRCALPHA)
+
+    backgroundAlert.fill((0, 0, 0))
+
+    backgroundAlert.set_alpha(128)
+
+    manager.screen.blit(backgroundAlert, (0, 0))
+
+    width = 300
+    height = 200
+
+    x = (400 / 2) - (width / 2)
+    y = (800 / 2) - (height / 2)
+
+    pygame.draw.rect(manager.screen, WHITE, (x, y, width, height), width, 10)
+
+    normalFont = pygame.font.Font(TEXT_REGULAR, 16)
+
+    t = normalFont.render(text, True, foreground)
+
+    textRect = t.get_rect()
+    textRect.center = (400 // 2, 800 // 2)
+
+    manager.screen.blit(t, textRect)
