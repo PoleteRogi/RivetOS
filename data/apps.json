@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Notes",
+        "icon": "Notes.png",
+        "version": "1.0",
+        "file": "notes.py"
+    },
+    {
+        "name": "Debug",
+        "icon": "Debug.png",
+        "version": "1.0",
+        "file": "debug.py"
+    },
+    {
+        "name": "Internet",
+        "icon": "Internet.png",
+        "version": "1.0",
+        "file": "internet.py"
+    },
+    {
+        "name": "Settings",
+        "icon": "Settings.png",
+        "version": "1.0",
+        "file": "settings.py"
+    },
+    {
+        "name": "Camera",
+        "icon": "Camera.png",
+        "version": "1.0",
+        "file": "camera.py"
+    }
+]
