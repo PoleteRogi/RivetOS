@@ -1,3 +1,7 @@
+![Frame 1 (3)](https://user-images.githubusercontent.com/76067773/231281710-8e011f3f-007d-48eb-b780-067775f283bf.png)
+
+<p style="text-align: center">
+
 # Rivet - Unified Operating System Platform
 Rivet is a platform that aims to unify all devices to function in a single operating system, providing a more integrated and straightforward user experience. Rivet is presented as an interface that sits on top of existing operating systems, such as Android or Linux.
 
@@ -17,3 +21,5 @@ We welcome contributions from developers interested in helping us build Rivet. I
 
 ## Issues
 If you encounter any issues with Rivet, please open an issue in the repository, and we'll address it as soon as possible.
+
+</p>
