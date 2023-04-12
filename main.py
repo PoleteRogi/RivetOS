@@ -37,8 +37,11 @@ def openAppOnMemory(file, name):
         # CLOSE THE APP IN CASE OF AN ERROR
         man.closeApp(name.split('.')[0])
 
-        man.alert('Error', str(e), m=man)
-        print(str(e))
+        if type(e) == FileNotFoundError:
+            man.alert('Error', 'App file does not exist', m=man)
+        else:
+            man.alert('Error', 'Unknown error ocurred')
+            print(e)
 
 man.onOpen = openAppOnMemory
 man.screen = screen
