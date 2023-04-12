@@ -14,12 +14,14 @@ appSizeGoal = 0.0
 isInApp = False
 lastIsInApp = False
 
-currentAlert = ""
+currentAlert = ";"
 
 running = True
 
 isInInput = False
 
+alertOpacity = 0
+alertOpacityGoal = 0
 # DYNAMIC FPS. THIS FPS VALUE CHANGES WHEN LOOKING AT STATIC THINGS TO LOW FPS
 fps = 60
 
@@ -52,6 +54,7 @@ def update():
     global appSizeGoal
     global screen
     global s
+    global alertOpacity
     if appSize < appSizeGoal:
         appSize += (appSizeGoal - appSize) / 3
 
@@ -60,6 +63,15 @@ def update():
 
     if appSize >= 0.999:
         appSize = 1
+
+    if alertOpacity < alertOpacityGoal:
+        alertOpacity += (alertOpacityGoal - alertOpacity) / 2
+
+    if alertOpacity > alertOpacityGoal:
+        alertOpacity -= (alertOpacity - alertOpacityGoal) / 2
+    
+    if alertOpacity >= 0.999:
+        alertOpacity = 1    
 
 def closeApp(name):
     global openApps
@@ -94,8 +106,11 @@ def closeAllApps():
 
 def alert(title, text, m=None):
     global currentAlert
+    global alertOpacityGoal
     global lastIsInApp
     global isInApp
+
+    alertOpacityGoal = 1
 
     currentAlert = text + ";" + title
     if m is not None:
@@ -108,13 +123,15 @@ def alert(title, text, m=None):
 def closeAlert():
     global currentAlert
     global isInApp
-    currentAlert = ""
+    global alertOpacityGoal
+    currentAlert = ";"
+
+    alertOpacityGoal = 0
 
     isInApp = lastIsInApp
 
 def renderAlert():
-    if currentAlert != "":
-        style.alert(currentAlert.split(";")[0], currentAlert.split(";")[1])
+    style.alert(currentAlert.split(";")[0], currentAlert.split(";")[1])
 
 def openInput():
     global isInInput
@@ -123,3 +140,6 @@ def openInput():
 def closeInput():
     global isInInput
     isInInput = False
+
+def init(m):
+    style.set_manager(m)

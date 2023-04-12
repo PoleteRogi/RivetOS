@@ -41,6 +41,8 @@ man.screen = screen
 
 actionbar.init(man)
 
+manager.init(man)
+
 while running:
     events = pygame.event.get()
     # poll for events

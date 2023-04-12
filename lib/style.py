@@ -257,6 +257,8 @@ def button(text, action):
         if click[0] == 1:
             if action != None:
                 action(manager)
+
+            manager.isInInput = False
     else:
         pass
     
@@ -323,7 +325,7 @@ def titleBar(text, color=primary):
     # outline and border
     outlineBorderSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
 
-    pygame.draw.rect(outlineBorderSurface, (0, 0, 0), (x, y + height - 2, width, 1))
+    pygame.draw.rect(outlineBorderSurface, (0, 0, 0), (x, y + height - 1, width, 1))
     pygame.draw.rect(outlineBorderSurface, (255, 255, 255), (x, y + height, width, 1))
 
     outlineBorderSurface.set_alpha(51.2)
@@ -335,11 +337,13 @@ def titleBar(text, color=primary):
 
 
 def alert(text, title):
-    events = pygame.event.get()
+    if manager.currentAlert != ";":
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                manager.closeAlert()
 
-    for event in events:
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            manager.closeAlert()
+    allSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
 
     backgroundAlert = pygame.Surface((400, 800), pygame.SRCALPHA)
 
@@ -347,7 +351,7 @@ def alert(text, title):
 
     backgroundAlert.set_alpha(128)
 
-    manager.screen.blit(backgroundAlert, (0, 0))
+    allSurface.blit(backgroundAlert, (0, 0))
 
     width = 200
     height = 100
@@ -355,7 +359,7 @@ def alert(text, title):
     x = (400 / 2) - (width / 2)
     y = (800 / 2) - (height / 2)
 
-    pygame.draw.rect(manager.screen, WHITE, (x, y, width, height), width, 10)
+    pygame.draw.rect(allSurface, WHITE, (x, y, width, height), width, 10)
 
     normalFont = pygame.font.Font(TEXT_REGULAR, 16)
     boldFont = pygame.font.Font(TEXT_BOLD, 24)
@@ -365,11 +369,15 @@ def alert(text, title):
     titleRect = title.get_rect()
     titleRect.topleft = (x + 20, y + 20)
 
-    manager.screen.blit(title, titleRect)
+    allSurface.blit(title, titleRect)
 
     t = normalFont.render(text, True, foreground)
 
     tRect = t.get_rect()
     tRect.topleft = (x + 20, y + 20 + 24 + 10)
 
-    manager.screen.blit(t, tRect)
+    allSurface.blit(t, tRect)
+
+    allSurface.set_alpha(manager.alertOpacity * 256)
+
+    manager.screen.blit(allSurface, (0, 0))
