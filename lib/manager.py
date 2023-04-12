@@ -141,5 +141,20 @@ def closeInput():
     global isInInput
     isInInput = False
 
+def read_file(file):
+    f = open('./data/fs/' + file, 'r')
+    content = f.read()
+    f.close()
+    return content
+
+def write_file(file, content):
+    try:
+        f = open('./data/fs/' + file, 'w')
+        f.write(content)
+        f.close()
+        return True
+    except:
+        return False
+
 def init(m):
     style.set_manager(m)
