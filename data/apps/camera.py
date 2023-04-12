@@ -3,6 +3,9 @@ import pygame.camera
 import pygame.image
 import sys
 
+def init(m):
+    pass
+
 def camera(m):
 
     set_background(BLACK)

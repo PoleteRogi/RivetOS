@@ -1,5 +1,8 @@
 from lib.style import *
 
+def init(m):
+    pass
+
 def click(m):
     m.alert('Test', 'XD')
 

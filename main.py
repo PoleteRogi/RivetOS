@@ -6,6 +6,7 @@ import lib.keyboard as keyboard
 import lib.manager as manager
 from datetime import datetime
 import lib.style as style
+import requests
 import sys
 import os
 
@@ -29,12 +30,15 @@ def openAppOnMemory(file, name):
         f.close()
         man.appsMemory.append(content)
 
-        exec(content)
+        exec('from data.apps.' + name.split('.')[0] + ' import *')
+
+        eval('init')(man)
     except Exception as e:
         # CLOSE THE APP IN CASE OF AN ERROR
         man.closeApp(name.split('.')[0])
 
-        man.alert('Error', 'The app does not exist', m=man)
+        man.alert('Error', str(e), m=man)
+        print(str(e))
 
 man.onOpen = openAppOnMemory
 man.screen = screen
@@ -63,7 +67,7 @@ while running:
     index = 0
     for app in man.openApps:
         
-        exec(man.appsMemory[index])
+        exec('from data.apps.' + app + ' import *')
 
         eval(app)(man)
 
