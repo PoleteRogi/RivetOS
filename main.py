@@ -4,14 +4,15 @@ import lib.home as home
 import lib.actionbar as actionbar
 import lib.keyboard as keyboard
 import lib.manager as manager
-from datetime import datetime
+import lib.statusbar as statusbar
 import lib.style as style
 import requests
 import sys
 import os
 
 # pygame setup
-pygame.init()
+pygame.display.init()
+pygame.font.init()
 
 # RivetPhone has a resolution of 240x320. This is a placeholder
 screen = pygame.display.set_mode((400, 800), pygame.NOFRAME, vsync=100000)
@@ -22,6 +23,8 @@ running = True
 pygame.display.set_caption('Rivet')
 
 man = manager
+
+statusbar.init(man)
 
 def openAppOnMemory(file, name):
     try:
@@ -42,30 +45,33 @@ def openAppOnMemory(file, name):
         else:
             man.alert('Error', 'Unknown error ocurred')
             print(e)
+        
+        closeApp()
+
+def closeApp():
+    home.wallpaperScaleGoal = 1.2
 
 man.onOpen = openAppOnMemory
+man.onClose = closeApp
 man.screen = screen
 
 actionbar.init(man)
 
 manager.init(man)
 
-while running:
+while man.running:
+
+    man.needToUpdate = False
 
     events = pygame.event.get()
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
     for event in events:
         if event.type == pygame.QUIT:
-            running = False
+            man.running = False
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
-
-    if man.isInApp == False:
-        style.RESET()
-
-    man.needToUpdate = False
 
     # RENDER
     home.render(screen, events, man)
@@ -82,27 +88,14 @@ while running:
     keyboard.render(man)
     actionbar.render(man)
 
-    if man.isInApp == False:
-        style.RESET()
-
     man.renderAlert()
 
-    normalFont = pygame.font.Font(style.TEXT_REGULAR, 16)
+    statusbar.render(home, screen)
 
-    now = datetime.now()
-
-    if home.isLockscreen == False:
-        time = now.strftime("%H:%M")
-
-        timeText = normalFont.render(time, True, style.foreground)
-
-        timeTextRect = timeText.get_rect()
-        timeTextRect.center = (400 // 2, (30 // 2))
-
-        screen.blit(timeText, timeTextRect)
+    man.update()
 
     if man.needToUpdate:
         # flip() the display to put your work on screen
         pygame.display.flip()
-
-    man.update()
+        
+    clock.tick(60)

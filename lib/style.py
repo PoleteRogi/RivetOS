@@ -30,6 +30,11 @@ direction = "x"
 
 manager = None
 
+def modify_color(color, intensity):
+    r = min(max(color[0] * intensity, 0), 255)
+    g = min(max(color[1] * intensity, 0), 255)
+    b = min(max(color[2] * intensity, 0), 255)
+    return (r, g, b)
 
 def set_manager(m):
     global manager
@@ -73,16 +78,24 @@ def initApp(m):
     if manager.appSize != 1 and not ('000' in str(manager.appSize)):
         manager.updateScreen()
 
+    surface = pygame.Surface((400, 800), pygame.SRCALPHA)
+
     pygame.draw.rect(
-        manager.screen,
+        surface,
         background,
         (
-            400 / 2 - 400 * manager.appSize / 2,
-            800 / 2 - 800 * manager.appSize / 2,
-            400 * manager.appSize,
-            800 * manager.appSize,
+            (manager.appPos[0] - 73 / 2 - 15) * (1 - manager.appSize),
+            (manager.appPos[1] - 73 / 2 - 15) * (1 - manager.appSize),
+            800 * manager.appSize + 73,
+            800 * manager.appSize + 73,
         ),
+        int(800),
+        int(50 * (1 - manager.appSize))
     )
+
+    surface.set_alpha(manager.appSize * 256)
+
+    manager.screen.blit(surface, (0, 0))
 
 def set_direction(dir):
     global direction
@@ -116,8 +129,8 @@ def label(text):
     if manager.isInApp == False:
         return
 
-    x = xIndex + 400 / 2 * (manager.appSizeGoal - manager.appSize)
-    y = yIndex + 800 / 2 * (manager.appSizeGoal - manager.appSize)
+    x = xIndex + manager.appPos[0] * (1 - manager.appSize)
+    y = yIndex + manager.appPos[1] * (1 - manager.appSize)
 
     normalFont = pygame.font.Font(weight, 16)
 
@@ -147,8 +160,8 @@ def input(text, width, value):
     if manager.isInApp == False:
         return
     
-    x = xIndex + 400 / 2 * (manager.appSizeGoal - manager.appSize)
-    y = yIndex + 800 / 2 * (manager.appSizeGoal - manager.appSize)
+    x = xIndex + manager.appPos[0] * (1 - manager.appSize)
+    y = yIndex + manager.appPos[1] * (1 - manager.appSize)
 
     normalFont = pygame.font.Font(weight, 16)
   
@@ -186,8 +199,8 @@ def input(text, width, value):
                 gonnaClick = True
                 inputbuttondown = False
     
-    x = xIndex + 400 / 2 * (manager.appSizeGoal - manager.appSize)
-    y = yIndex + 800 / 2 * (manager.appSizeGoal - manager.appSize)
+    x = xIndex + manager.appPos[0] * (1 - manager.appSize)
+    y = yIndex + manager.appPos[1] * (1 - manager.appSize)
 
     pygame.draw.rect(manager.screen, background, (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), 10)
 
@@ -227,8 +240,8 @@ def textArea(text, width, height):
     if manager.isInApp == False:
         return
     
-    x = xIndex + 400 / 2 * (manager.appSizeGoal - manager.appSize)
-    y = yIndex + 800 / 2 * (manager.appSizeGoal - manager.appSize)
+    x = xIndex + manager.appPos[0] * (1 - manager.appSize)
+    y = yIndex + manager.appPos[1] * (1 - manager.appSize)
 
     normalFont = pygame.font.Font(weight, 16)
     
@@ -272,8 +285,8 @@ def textArea(text, width, height):
 
     manager.updateScreen()
     
-    x = xIndex + 400 / 2 * (manager.appSizeGoal - manager.appSize)
-    y = yIndex + 800 / 2 * (manager.appSizeGoal - manager.appSize)
+    x = xIndex + manager.appPos[0] * (1 - manager.appSize)
+    y = yIndex + manager.appPos[1] * (1 - manager.appSize)
 
     manager.screen.blit(text, textRect)
 
@@ -291,8 +304,8 @@ def button(text, action):
     if manager.isInApp == False:
         return
     
-    x = xIndex + 400 / 2 * (manager.appSizeGoal - manager.appSize)
-    y = yIndex + 800 / 2 * (manager.appSizeGoal - manager.appSize)
+    x = xIndex + manager.appPos[0] * (1 - manager.appSize)
+    y = yIndex + manager.appPos[1] * (1 - manager.appSize)
 
     oldweight = weight
     weight = TEXT_SEMIBOLD
@@ -328,19 +341,13 @@ def button(text, action):
         textRect.width += 4
         textRect.height += 4
         hover = True
-
-        if click[0] == 1:
-            if action != None:
-                action(manager)
-
-            manager.isInInput = False
     else:
         pass
 
     manager.updateScreen()
     
-    x = xIndex + 400 / 2 * (manager.appSizeGoal - manager.appSize)
-    y = yIndex + 800 / 2 * (manager.appSizeGoal - manager.appSize)
+    x = xIndex + manager.appPos[0] * (1 - manager.appSize)
+    y = yIndex + manager.appPos[1] * (1 - manager.appSize)
 
     pygame.draw.rect(manager.screen, primary, (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), 10)
 
@@ -365,6 +372,13 @@ def button(text, action):
         xIndex += textRect.width + 20 + margin[0]
     if direction == "y":
         yIndex += textRect.height + 20 + margin[1]
+    
+    if hover:
+        if click[0] == 1:
+            if action != None:
+                action(manager)
+
+            manager.isInInput = False
 
 def titleBar(text, color=primary):
     global xIndex
@@ -378,8 +392,8 @@ def titleBar(text, color=primary):
     xIndex = 15
     yIndex = 45
 
-    x = 0 + 400 / 2 * (manager.appSizeGoal - manager.appSize)
-    y = 0 + 800 / 2 * (manager.appSizeGoal - manager.appSize)
+    x = 0 + manager.appPos[0] * (1 - manager.appSize)
+    y = 0 + manager.appPos[1] * (1 - manager.appSize)
     width = 400 * manager.appSize + 1
     height = 75 * manager.appSize
 
@@ -415,10 +429,9 @@ def titleBar(text, color=primary):
 
 def alert(text, title):
     if manager.currentAlert != ";":
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                manager.closeAlert()
+        click = pygame.mouse.get_pressed()
+        if click[0] == 1 and manager.canCloseAlert:
+            manager.closeAlert()
 
     allSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
 
@@ -458,3 +471,6 @@ def alert(text, title):
     allSurface.set_alpha(manager.alertOpacity * 256)
 
     manager.screen.blit(allSurface, (0, 0))
+
+    if manager.alertOpacity != manager.alertOpacityGoal:
+        manager.updateScreen()

@@ -22,15 +22,10 @@ lastActionBarHover = False
 def render(m):
     global homeButtonImage
     global lastActionBarHover
-    actionBarSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
 
     pygame.draw.rect(
-        actionBarSurface, (0, 0, 0), (0, 800 - 50 + 50 * (1 - m.appSize), 400, 50), 400
+        m.screen, (style.modify_color(style.background, 0.95)), (0, 800 - 50 + 50 * (1 - m.appSize), 400, 50), 400
     )
-
-    actionBarSurface.set_alpha(32)
-
-    m.screen.blit(actionBarSurface, (0, 0))
 
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()

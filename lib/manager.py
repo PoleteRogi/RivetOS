@@ -5,6 +5,7 @@ openApps = []
 appsMemory = []
 
 onOpen = None
+onClose = None
 
 screen = None
 
@@ -33,6 +34,11 @@ onInputEvent = None
 
 needToUpdate = False
 
+threadings = []
+
+import os
+import sys
+
 def keyboardInput(char):
     global charToAdd
     global addText
@@ -47,12 +53,17 @@ def addOnInput(event):
     global onInputEvent
     onInputEvent = event    
 
-def openApp(name):
+appPos = (0, 0)
+
+def openApp(name, pos):
     global openApps
     global onOpen
     global appSize
     global appSizeGoal
     global isInApp
+    global appPos
+
+    appPos = pos
 
     openApps.clear()
     appsMemory.clear()
@@ -77,14 +88,22 @@ def update():
     global screen
     global s
     global alertOpacity
+    global openApps
+
     if appSize < appSizeGoal:
-        appSize += (appSizeGoal - appSize) / 3
+        appSize += (appSizeGoal - appSize) / 5
 
     if appSize > appSizeGoal:
-        appSize -= (appSize - appSizeGoal) / 3
+        appSize -= (appSize - appSizeGoal) / 5
 
-    if appSize >= 0.999:
+    if appSize >= 0.9999:
         appSize = 1
+    
+    if appSize <= 0.0001 and appSize != 0:
+        appSize = 0
+        openApps.clear()
+        style.RESET()
+        updateScreen()
 
     if alertOpacity < alertOpacityGoal:
         alertOpacity += (alertOpacityGoal - alertOpacity) / 2
@@ -94,6 +113,23 @@ def update():
     
     if alertOpacity >= 0.999:
         alertOpacity = 1    
+
+    if alertOpacity <= 0.001:
+        alertOpacity = 0
+
+    if isShutingDown:     
+        screen.fill(style.background)
+
+        logo = pygame.image.load("./assets/icons/system/RivetLight.png").convert_alpha()
+
+        width = 50
+        height = 65
+
+        logo = pygame.transform.scale(logo, (width, height))
+
+        screen.blit(logo, (400 / 2 - width / 2, 800 / 2 - height / 2))
+
+        appSize = 1
 
 def closeApp(name):
     global openApps
@@ -109,6 +145,8 @@ def closeApp(name):
 
     isInInput = False
 
+    if onClose != None:
+        onClose()
 
 def closeAllApps():
     global openApps
@@ -118,18 +156,56 @@ def closeAllApps():
     global addText
     global charToAdd
 
-    # openApps.clear()
-
     appSizeGoal = 0.0
 
     isInApp = False
 
     style.RESET()
+    updateScreen()
 
     isInInput = False
 
     addText = False
     charToAdd = ''
+
+    if onClose != None:
+        onClose()
+
+canCloseAlert = False
+
+isShutingDown = False
+
+def SHUT():
+    global isShutingDown
+
+    isShutingDown = True
+
+    closeAllApps()
+    setTimeout(terminate, 5000)
+
+def terminate():
+    global running
+    running = False
+    terminateThreadings()
+
+    if sys.platform == 'linux' or sys.platform == 'linux2':
+        os.system('sudo shutdown now')
+
+def terminateThreadings():
+    for thread in threadings:
+        thread.cancel()
+
+from threading import Timer  
+ 
+def setTimeout(fn, ms, *args, **kwargs): 
+    t = Timer(ms / 1000., fn, args=args, kwargs=kwargs) 
+    t.start()
+    threadings.append(t) 
+    return t
+
+def closeAlertCanFunc():
+    global canCloseAlert
+    canCloseAlert = True
 
 def alert(title, text, m=None):
     global currentAlert
@@ -146,16 +222,20 @@ def alert(title, text, m=None):
     lastIsInApp = isInApp
     isInApp = True
 
+    setTimeout(closeAlertCanFunc, 500)
 
 def closeAlert():
     global currentAlert
     global isInApp
     global alertOpacityGoal
+    global canCloseAlert
     currentAlert = ";"
 
     alertOpacityGoal = 0
 
     isInApp = lastIsInApp
+
+    canCloseAlert = False
 
 def renderAlert():
     style.alert(currentAlert.split(";")[0], currentAlert.split(";")[1])
@@ -188,6 +268,7 @@ def init(m):
 
 def updateScreen():
     global needToUpdate
+    global appSize
 
     if needToUpdate == False:
         needToUpdate = True

@@ -23,15 +23,24 @@ def render(m):
 
     if keyboardPosScale >= 0.999:
         keyboardPosScale = 1
-
-    pygame.draw.rect(m.screen, (253, 254, 242), (0, 800 - 216 + 216 * (1 - keyboardPosScale), 400, 216))
     
-    button(m, '')
+    if keyboardPosScale <= 0.001:
+        keyboardPosScale = 0
+    
+    if keyboardPosScale != 0:
+        
+        borderSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
+
+        pygame.draw.rect(borderSurface, (0, 0, 0), (0, 800 - 216 + 216 * (1 - keyboardPosScale), 400, 1))
+
+        pygame.draw.rect(m.screen, (253, 254, 242), (0, 800 - 216 + 216 * (1 - keyboardPosScale), 400, 216))
+
+        borderSurface.set_alpha(52)
+
+        m.screen.blit(borderSurface, (0, 0))
 
 def button(m, key):
-    borderSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
 
-    pygame.draw.rect(borderSurface, (0, 0, 0), (0, 800 - 216 + 216 * (1 - keyboardPosScale), 400, 1))
 
     width = 100
     height = 36
@@ -41,11 +50,11 @@ def button(m, key):
 
     buttonRect = (x, y, width, height)
 
-    pygame.draw.rect(borderSurface, (0, 0, 0), buttonRect, 1, 10)
+    # pygame.draw.rect(borderSurface, (0, 0, 0), buttonRect, 1, 10)
 
-    borderSurface.set_alpha(52)
+    # borderSurface.set_alpha(52)
 
-    m.screen.blit(borderSurface, (0, 0))
+    # m.screen.blit(borderSurface, (0, 0))
 
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
@@ -62,4 +71,4 @@ def button(m, key):
         m.screen.blit(hoverSurface, (0, 0))
 
         if click[0] == 1:
-            m.keyboardInput('A')
+            m.keyboardInput(key)
