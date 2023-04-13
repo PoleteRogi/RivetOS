@@ -1,7 +1,7 @@
 from lib.style import *
 
 def init(m):
-    pass
+    m.input = 'Input'
 
 def click(m):
     m.alert('Test', 'XD')
@@ -13,7 +13,7 @@ def debug(m):
 
     title = titleBar('Debug')
 
-    inpt = input('Input', 100, None)
+    inpt = input('m.input', 100, None)
 
     text = label('Label')
 

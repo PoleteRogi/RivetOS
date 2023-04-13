@@ -17,8 +17,11 @@ def init(m):
     ).convert_alpha()
 
 
+lastActionBarHover = False
+
 def render(m):
     global homeButtonImage
+    global lastActionBarHover
     actionBarSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
 
     pygame.draw.rect(
@@ -35,11 +38,13 @@ def render(m):
     x = 200 - 40
     y = 750 + 25 - 20 + 40 * (1 - m.appSize)
 
+    hover = False
+
     if m.isInApp == False and round(m.appSize) == 0:
         y = 800
 
     if x + 80 > mouse[0] > x and y + 40 > mouse[1] > y:
-
+        hover = True
         homeButtonImage = pygame.transform.scale(
             originalHomeButtonImage, (85, 42.5)
         ).convert_alpha()
@@ -55,5 +60,10 @@ def render(m):
         homeButtonImage = pygame.transform.scale(
             originalHomeButtonImage, (80, 40)
         ).convert_alpha()
+
+    if hover != lastActionBarHover:
+        m.updateScreen()
+        
+    lastActionBarHover = hover
 
     m.screen.blit(homeButtonImage, (x, y))

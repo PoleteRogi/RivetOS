@@ -14,7 +14,7 @@ import os
 pygame.init()
 
 # RivetPhone has a resolution of 240x320. This is a placeholder
-screen = pygame.display.set_mode((400, 800))
+screen = pygame.display.set_mode((400, 800), pygame.NOFRAME, vsync=100000)
 clock = pygame.time.Clock()
 
 running = True
@@ -51,6 +51,7 @@ actionbar.init(man)
 manager.init(man)
 
 while running:
+
     events = pygame.event.get()
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -63,6 +64,8 @@ while running:
 
     if man.isInApp == False:
         style.RESET()
+
+    man.needToUpdate = False
 
     # RENDER
     home.render(screen, events, man)
@@ -98,10 +101,8 @@ while running:
 
         screen.blit(timeText, timeTextRect)
 
-
-    # flip() the display to put your work on screen
-    pygame.display.flip()
+    if man.needToUpdate:
+        # flip() the display to put your work on screen
+        pygame.display.flip()
 
     man.update()
-
-    # clock.tick(man.fps)  # limits FPS to 60

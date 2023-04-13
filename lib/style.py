@@ -70,6 +70,9 @@ def initApp(m):
 
     manager = m
 
+    if manager.appSize != 1 and not ('000' in str(manager.appSize)):
+        manager.updateScreen()
+
     pygame.draw.rect(
         manager.screen,
         background,
@@ -121,8 +124,7 @@ def label(text):
     text = normalFont.render(text, True, foreground)
 
     textRect = text.get_rect()
-    textRect.left = x
-    textRect.top = y
+    textRect.topleft = (x, y)
 
     manager.screen.blit(text, textRect)
 
@@ -149,8 +151,14 @@ def input(text, width, value):
     y = yIndex + 800 / 2 * (manager.appSizeGoal - manager.appSize)
 
     normalFont = pygame.font.Font(weight, 16)
-    
-    text = normalFont.render(text, True, foreground)
+  
+    m = manager
+
+    if manager.addText == True:
+        exec(text + ' += "' + manager.charToAdd.replace('"', "'") + '"')
+        manager.addText = False
+
+    text = normalFont.render(eval(text), True, foreground)
 
     textRect = text.get_rect()
     textRect.width = width
@@ -183,22 +191,89 @@ def input(text, width, value):
 
     pygame.draw.rect(manager.screen, background, (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), 10)
 
-    borderSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
+    # borderSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
     
-    pygame.draw.rect(borderSurface, (0, 0, 0), (x, y, textRect.width + 20, textRect.height + 20), 1, 10)
+    # pygame.draw.rect(borderSurface, (0, 0, 0), (x, y, textRect.width + 20, textRect.height + 20), 1, 10)
     
-    if hover == False:
-        borderSurface.set_alpha(52)
-    else:
-        borderSurface.set_alpha(104)
+    # if hover == False:
+        # borderSurface.set_alpha(52)
+    # else:
+        # borderSurface.set_alpha(104)
+
+    # if manager.isInInput:
+        # pygame.draw.rect(borderSurface, (0, 0, 0), (x - 1, y - 1, textRect.width + 20 + 2, textRect.height + 20 + 2), 1, 11)
+        # borderSurface.set_alpha(104)
+        # pygame.draw.rect(borderSurface, (0, 0, 0), (textRect.left + textRect.width + 2, textRect.top, 2, textRect.height), 2, 0)
+    # else:
+        # pygame.draw.rect(borderSurface, (255, 255, 255), (x - 1, y - 1, textRect.width + 20 + 2, textRect.height + 20 + 2), 1, 10)
+
+    # manager.screen.blit(borderSurface, (0, 0))
+
+    manager.screen.blit(text, textRect)
+
+    if direction == "x":
+        xIndex += textRect.width + 20 + margin[0]
+    if direction == "y":
+        yIndex += textRect.height + 20 + margin[1]
+
+def textArea(text, width, height):
+    global xIndex
+    global yIndex
+    global foreground
+    global weight
+    global inputbuttondown
+    global gonnaClick
+
+    if manager.isInApp == False:
+        return
+    
+    x = xIndex + 400 / 2 * (manager.appSizeGoal - manager.appSize)
+    y = yIndex + 800 / 2 * (manager.appSizeGoal - manager.appSize)
+
+    normalFont = pygame.font.Font(weight, 16)
+    
+    m = manager
+
+    if manager.addText == True:
+        manager.addText = False
+        exec(text + ' += "' + manager.charToAdd.replace('"', "'") + '"')
+
+    text = normalFont.render(eval(text), True, foreground)
+
+    textRect = text.get_rect()
+    textRect.width = width
+    textRect.height = height
+    textRect.left = x + 10
+    textRect.top = y + 10
+
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+
+    hover = False
+
+    if (
+        xIndex + textRect.width + 20 > mouse[0] > xIndex
+        and yIndex + textRect.height + 20 > mouse[1] > yIndex
+    ):
+        hover = True
+
+        if click[0] == 1:
+            if inputbuttondown == False and gonnaClick == True:
+                inputbuttondown = True
+                manager.isInInput = not manager.isInInput
+                gonnaClick = False
+        else:
+            if inputbuttondown:
+                gonnaClick = True
+                inputbuttondown = False
 
     if manager.isInInput:
-        pygame.draw.rect(borderSurface, (0, 0, 0), (x - 1, y - 1, textRect.width + 20 + 2, textRect.height + 20 + 2), 1, 11)
-        borderSurface.set_alpha(104)
-    else:
-        pygame.draw.rect(borderSurface, (255, 255, 255), (x - 1, y - 1, textRect.width + 20 + 2, textRect.height + 20 + 2), 1, 10)
+        pygame.draw.rect(manager.screen, (0, 0, 0), (textRect.left + textRect.width + 2, textRect.top, 2, textRect.height), 2, 0)
 
-    manager.screen.blit(borderSurface, (0, 0))
+    manager.updateScreen()
+    
+    x = xIndex + 400 / 2 * (manager.appSizeGoal - manager.appSize)
+    y = yIndex + 800 / 2 * (manager.appSizeGoal - manager.appSize)
 
     manager.screen.blit(text, textRect)
 
@@ -261,20 +336,22 @@ def button(text, action):
             manager.isInInput = False
     else:
         pass
+
+    manager.updateScreen()
     
     x = xIndex + 400 / 2 * (manager.appSizeGoal - manager.appSize)
     y = yIndex + 800 / 2 * (manager.appSizeGoal - manager.appSize)
 
     pygame.draw.rect(manager.screen, primary, (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), 10)
 
-    borderSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
+    # borderSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
     
-    pygame.draw.rect(borderSurface, (0, 0, 0), (x, y, textRect.width + 20, textRect.height + 20), 1, 10)
-    pygame.draw.rect(borderSurface, (255, 255, 255), (x - 1, y - 1, textRect.width + 20 + 2, textRect.height + 20 + 2), 1, 10)
+    # pygame.draw.rect(borderSurface, (0, 0, 0), (x, y, textRect.width + 20, textRect.height + 20), 1, 10)
+    # pygame.draw.rect(borderSurface, (255, 255, 255), (x - 1, y - 1, textRect.width + 20 + 2, textRect.height + 20 + 2), 1, 10)
 
-    borderSurface.set_alpha(52)
+    # borderSurface.set_alpha(52)
 
-    manager.screen.blit(borderSurface, (0, 0))
+    # manager.screen.blit(borderSurface, (0, 0))
 
     if hover:
         xIndex += 2
@@ -303,7 +380,7 @@ def titleBar(text, color=primary):
 
     x = 0 + 400 / 2 * (manager.appSizeGoal - manager.appSize)
     y = 0 + 800 / 2 * (manager.appSizeGoal - manager.appSize)
-    width = 400 * manager.appSize
+    width = 400 * manager.appSize + 1
     height = 75 * manager.appSize
 
     pygame.draw.rect(manager.screen, color, (x, y, width, height))
@@ -323,14 +400,14 @@ def titleBar(text, color=primary):
     weight = lastWeight
 
     # outline and border
-    outlineBorderSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
+    # outlineBorderSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
 
-    pygame.draw.rect(outlineBorderSurface, (0, 0, 0), (x, y + height - 1, width, 1))
-    pygame.draw.rect(outlineBorderSurface, (255, 255, 255), (x, y + height, width, 1))
+    # pygame.draw.rect(outlineBorderSurface, (0, 0, 0), (x, y + height - 1, width, 1))
+    # pygame.draw.rect(outlineBorderSurface, (255, 255, 255), (x, y + height, width, 1))
 
-    outlineBorderSurface.set_alpha(51.2)
+    # outlineBorderSurface.set_alpha(51.2)
 
-    manager.screen.blit(outlineBorderSurface, (0, 0))
+    # manager.screen.blit(outlineBorderSurface, (0, 0))
 
     xIndex = padding[0]
     yIndex = 75 + padding[1]

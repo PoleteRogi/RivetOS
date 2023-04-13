@@ -22,8 +22,30 @@ isInInput = False
 
 alertOpacity = 0
 alertOpacityGoal = 0
+
 # DYNAMIC FPS. THIS FPS VALUE CHANGES WHEN LOOKING AT STATIC THINGS TO LOW FPS
 fps = 60
+
+charToAdd = ''
+addText = False
+
+onInputEvent = None
+
+needToUpdate = False
+
+def keyboardInput(char):
+    global charToAdd
+    global addText
+
+    charToAdd = char
+    addText = True
+
+    if onInputEvent != None:
+        onInputEvent()
+
+def addOnInput(event):
+    global onInputEvent
+    onInputEvent = event    
 
 def openApp(name):
     global openApps
@@ -93,6 +115,8 @@ def closeAllApps():
     global isInApp
     global appSizeGoal
     global isInInput
+    global addText
+    global charToAdd
 
     # openApps.clear()
 
@@ -103,6 +127,9 @@ def closeAllApps():
     style.RESET()
 
     isInInput = False
+
+    addText = False
+    charToAdd = ''
 
 def alert(title, text, m=None):
     global currentAlert
@@ -158,3 +185,9 @@ def write_file(file, content):
 
 def init(m):
     style.set_manager(m)
+
+def updateScreen():
+    global needToUpdate
+
+    if needToUpdate == False:
+        needToUpdate = True
