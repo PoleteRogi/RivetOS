@@ -6,6 +6,9 @@ def init(m):
 def click(m):
     m.alert('Test', 'XD')
 
+def clickNotify(m):
+    m.notify('Debug', 'Test', 'This is a notification')
+
 def debug(m):
     set_direction('y')
 
@@ -20,3 +23,5 @@ def debug(m):
     btn = button('Button', None)
 
     dialogBtn = button('Open dialog', click)
+
+    notificationBtn = button('Notify', clickNotify)

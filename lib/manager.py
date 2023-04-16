@@ -36,6 +36,14 @@ needToUpdate = False
 
 threadings = []
 
+class Notification:
+    def __init__(self, app, title, text):
+        self.app = app
+        self.title = title
+        self.text = text
+
+notifications = []
+
 import os
 import sys
 
@@ -272,3 +280,8 @@ def updateScreen():
 
     if needToUpdate == False:
         needToUpdate = True
+
+def notify(app, title, text):
+    global notifications
+    notification = Notification(app, title, text)
+    notifications.append(notification)
