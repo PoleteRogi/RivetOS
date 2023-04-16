@@ -90,7 +90,7 @@ while man.running:
 
     man.renderAlert()
 
-    statusbar.render(home, screen)
+    statusbar.render(home, screen, events)
 
     man.update()
 

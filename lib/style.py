@@ -397,7 +397,7 @@ def titleBar(text, color=primary):
     width = 400 * manager.appSize + 1
     height = 75 * manager.appSize
 
-    pygame.draw.rect(manager.screen, color, (x, y, width, height))
+    pygame.draw.rect(manager.screen, color, (x, y, width, height), border_radius=int(50 * (1 - manager.appSize)))
 
     if color == BLACK or color == GREEN or color == RED or color == BLUE:
         foreground = WHITE

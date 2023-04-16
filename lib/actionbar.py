@@ -41,11 +41,11 @@ def render(m):
     if x + 80 > mouse[0] > x and y + 40 > mouse[1] > y:
         hover = True
         homeButtonImage = pygame.transform.scale(
-            originalHomeButtonImage, (85, 42.5)
+            originalHomeButtonImage, (100, 40)
         ).convert_alpha()
 
-        x = 200 - 42.5
-        y = 750 + 25 - 21 + 40 * (1 - m.appSize)
+        x = 200 - 50
+        y = 750 + 25 - 20 + 40 * (1 - m.appSize)
 
         if click[0] == 1:
             # CLOSE APP

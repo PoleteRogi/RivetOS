@@ -23,6 +23,8 @@ def set_interval(func, sec):
 def init(m):
     global normalFont
     global manager
+    global lockscreenTimeFont
+    global blurredscreenimage
 
     manager = m
 
@@ -30,7 +32,8 @@ def init(m):
 
     set_interval(m.updateScreen, 1)
 
-def render(home, screen):
+def render(home, screen, events):
+    global showCenter
     now = datetime.now()
 
     if home.isLockscreen == False:
