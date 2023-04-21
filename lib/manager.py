@@ -1,5 +1,6 @@
 import pygame
 import lib.style as style
+import json
 
 openApps = []
 appsMemory = []
@@ -35,6 +36,8 @@ onInputEvent = None
 needToUpdate = False
 
 threadings = []
+
+guiRender = True
 
 class Notification:
     def __init__(self, app, title, text):
@@ -273,6 +276,21 @@ def write_file(file, content):
 
 def init(m):
     style.set_manager(m)
+    checkStartupData()
+
+def checkStartupData():
+    global guiRender
+    global appSize
+    startup_data = read_file('../startup.json')
+    
+    data = json.loads(startup_data)
+
+    isSetup = data['setup']
+
+    if isSetup == False:
+        openApp('setup.py', (400 / 2, 800 / 2))
+        guiRender = False
+        appSize = 1
 
 def updateScreen():
     global needToUpdate

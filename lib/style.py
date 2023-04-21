@@ -146,6 +146,37 @@ def label(text):
     if direction == "y":
         yIndex += textRect.height + margin[1]
 
+def image(url, isAlpha=False, size=None, pos=None):
+    global xIndex
+    global yIndex
+
+    if manager.isInApp == False:
+        return
+
+    x = xIndex + manager.appPos[0] * (1 - manager.appSize)
+    y = yIndex + manager.appPos[1] * (1 - manager.appSize)
+    
+    if isAlpha == False:
+        img = pygame.image.load('./assets/' + url).convert()
+    else:
+        img = pygame.image.load('./assets/' + url).convert_alpha()
+
+    if size != None:
+        img = pygame.transform.scale(img, size)
+
+    rect = img.get_rect()
+    if pos == None:
+        rect.topleft = (x, y)
+    else:
+        rect.topleft = pos
+
+    manager.screen.blit(img, rect)
+
+    if direction == "x":
+        xIndex += rect.width + margin[0]
+    if direction == "y":
+        yIndex += rect.height + margin[1]
+
 inputbuttondown = False
 gonnaClick = True
 
