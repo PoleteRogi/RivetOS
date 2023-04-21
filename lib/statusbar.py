@@ -63,6 +63,7 @@ def renderNotifications():
 
             currentNotification = notification
             notificationShowValueGoal = 1
+            notificationShowValue = 0
 
             setTimeout(closeNotification, 2000)
     
@@ -85,14 +86,14 @@ def renderNotifications():
         NOTIFICATION_X = (400 / 2 - NOTIFICATION_WIDTH / 2)
         NOTIFICATION_Y = 20 - (NOTIFICATION_HEIGHT + 40) * (1 - notificationShowValue)
 
-        pygame.draw.rect(manager.screen, style.background, (NOTIFICATION_X, NOTIFICATION_Y, NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT), border_radius=10)
+        pygame.draw.rect(manager.screen, style.WHITE, (NOTIFICATION_X, NOTIFICATION_Y, NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT), border_radius=10)
 
-        pygame.draw.rect(manager.screen, style.modify_color(style.background, 0.9), (NOTIFICATION_X, NOTIFICATION_Y, NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT), width=1, border_radius=10)
+        pygame.draw.rect(manager.screen, style.modify_color(style.WHITE, 0.9), (NOTIFICATION_X, NOTIFICATION_Y, NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT), width=1, border_radius=10)
 
-        titleText = titleFont.render(notification.title, True, style.foreground)
+        titleText = titleFont.render(notification.title, True, style.BLACK)
         manager.screen.blit(titleText, (NOTIFICATION_X + 20, NOTIFICATION_Y + 20))
 
-        contentText = normalFont.render(notification.text, True, style.foreground)
+        contentText = normalFont.render(notification.text, True, style.BLACK)
         manager.screen.blit(contentText, (NOTIFICATION_X + 20, NOTIFICATION_Y + 20 + 18 + 10))
     
     if notificationShowValue != 0 and notificationShowValue != notificationShowValueGoal:

@@ -97,5 +97,3 @@ while man.running:
     if man.needToUpdate:
         # flip() the display to put your work on screen
         pygame.display.flip()
-        
-    clock.tick(60)
