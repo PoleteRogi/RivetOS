@@ -129,6 +129,8 @@ def render(screen, events, manager):
                     isLockscreen = False
                     wallpaperScaleGoal = 1.2
 
+            
+
         else:
             iconScaleGoal = 1
 
@@ -167,11 +169,11 @@ def render(screen, events, manager):
                     image = appIconsScaled[index]
 
                 originX = (
-                    (column * columnsize + 10 * 3) * iconScale
+                    (column * columnsize + 10 * 4) * iconScale
                     + (columnsize / 2)
                     - (iconsize / 2)
                 )
-                originY = (row * rowsize + 10 * 3) + (rowsize / 2) - (iconsize / 2)
+                originY = (row * rowsize + 10 * 4) + (rowsize / 2) - (iconsize / 2)
 
                 x = originX
                 y = originY

@@ -63,7 +63,7 @@ def renderNotifications():
 
             currentNotification = notification
             notificationShowValueGoal = 1
-            notificationShowValue = 0
+            # notificationShowValue = 0
 
             setTimeout(closeNotification, 2000)
     
@@ -88,7 +88,7 @@ def renderNotifications():
 
         pygame.draw.rect(manager.screen, style.WHITE, (NOTIFICATION_X, NOTIFICATION_Y, NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT), border_radius=10)
 
-        pygame.draw.rect(manager.screen, style.modify_color(style.WHITE, 0.9), (NOTIFICATION_X, NOTIFICATION_Y, NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT), width=1, border_radius=10)
+        pygame.draw.rect(manager.screen, style.modify_color(style.WHITE, 0.8), (NOTIFICATION_X, NOTIFICATION_Y, NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT), width=1, border_radius=10)
 
         titleText = titleFont.render(notification.title, True, style.BLACK)
         manager.screen.blit(titleText, (NOTIFICATION_X + 20, NOTIFICATION_Y + 20))
@@ -103,6 +103,9 @@ def render(home, screen, events):
     global showCenter
     now = datetime.now()
     
+    # if manager.isInApp:
+        # pygame.draw.rect(manager.screen, style.background, (0, 0, 400, 30))
+
     if notificationShowValue < 0.5:
         if home.isLockscreen == False:
             time = now.strftime("%H:%M")
@@ -119,8 +122,10 @@ def render(home, screen, events):
         plugged = battery.power_plugged
         percent = str(battery.percent)
         
-        percentText = normalFont.render(percent + '%', True, style.background)
-
+        if plugged == False:
+            percentText = normalFont.render(percent + '%', True, style.background)
+        else:
+            percentText = normalFont.render('✚ ' + percent + '%', True, style.background)
         percentTextRect = percentText.get_rect()
         percentTextRect.right = 400 - 8
         percentTextRect.centery = 30 // 2

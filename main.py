@@ -9,10 +9,12 @@ import lib.style as style
 import requests
 import sys
 import os
+import pygame.camera
 
 # pygame setup
 pygame.display.init()
 pygame.font.init()
+pygame.camera.init()
 
 # RivetPhone has a resolution of 240x320. This is a placeholder
 screen = pygame.display.set_mode((400, 800), pygame.NOFRAME, vsync=100000)
@@ -42,8 +44,9 @@ def openAppOnMemory(file, name):
 
         if type(e) == FileNotFoundError:
             man.alert('Error', 'App file does not exist', m=man)
+            print('App file does not exist')
         else:
-            man.alert('Error', 'Unknown error ocurred')
+            man.alert('Error', str(e))
             print(e)
         
         closeApp()
@@ -97,3 +100,5 @@ while man.running:
     if man.needToUpdate:
         # flip() the display to put your work on screen
         pygame.display.flip()
+    
+    clock.tick(60)

@@ -39,6 +39,8 @@ threadings = []
 
 guiRender = True
 
+webcam = None
+
 class Notification:
     def __init__(self, app, title, text):
         self.app = app
@@ -46,6 +48,8 @@ class Notification:
         self.text = text
 
 notifications = []
+
+scroll = 0
 
 import os
 import sys
@@ -73,6 +77,8 @@ def openApp(name, pos):
     global appSizeGoal
     global isInApp
     global appPos
+    global scroll
+    global velocity
 
     appPos = pos
 
@@ -92,6 +98,13 @@ def openApp(name, pos):
 
     style.RESET()
 
+    velocity = 0
+
+    scroll = 0
+lastMousePos = (0, 0)
+lastLastMousePos = (0, 0)
+lastClick = 0
+velocity = 0
 
 def update():
     global appSize
@@ -100,6 +113,11 @@ def update():
     global s
     global alertOpacity
     global openApps
+    global lastMousePos
+    global lastLastMousePos
+    global lastClick
+    global scroll
+    global velocity
 
     if appSize < appSizeGoal:
         appSize += (appSizeGoal - appSize) / 5
@@ -141,6 +159,40 @@ def update():
         screen.blit(logo, (400 / 2 - width / 2, 800 / 2 - height / 2))
 
         appSize = 1
+    
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+
+    if click[0] == 1 and isInApp and lastClick != click:
+        # MOUSE DOWN
+        lastClick = click
+        lastMousePos = mouse
+        
+    elif lastClick != click:
+        # MOUSE UP
+        lastClick = click
+
+    if click[0] == 1 and lastLastMousePos != mouse[1]:
+        lastLastMousePos = mouse[1]
+        velocity = round(0 - (lastLastMousePos - lastMousePos[1]) / 20)
+
+    else:
+        lastMousePos = mouse
+
+    if click[0] != 1:
+        if velocity > 0:
+            velocity -= 0.5
+        elif velocity < 0:
+            velocity += 0.5
+
+        if scroll < 0:
+            velocity = (0 - scroll) / 10
+
+        velocity = round(velocity * 10) / 10
+
+        scroll += round(velocity)
+
+    scroll += round((lastMousePos[1] - mouse[1]) / 30)
 
 def closeApp(name):
     global openApps
@@ -291,6 +343,19 @@ def checkStartupData():
         openApp('setup.py', (400 / 2, 800 / 2))
         guiRender = False
         appSize = 1
+
+def updateStartupData():
+    startup_data = read_file('../startup.json')
+
+    data = json.loads(startup_data)
+
+    data['setup'] = True
+
+    content = json.dumps(data)
+
+    write_file('../startup.json', content)
+
+    os.execl(sys.executable, sys.executable, *sys.argv)
 
 def updateScreen():
     global needToUpdate
