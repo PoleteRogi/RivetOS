@@ -10,6 +10,7 @@ import requests
 import sys
 import os
 import pygame.camera
+from PIL import Image, ImageFilter
 
 # pygame setup
 pygame.display.init()
@@ -100,6 +101,16 @@ while man.running:
     if man.needToUpdate:
         # flip() the display to put your work on screen
         pygame.display.flip()
+    
+        if man.hasToTakeScreenshot:
+            pygame.image.save(screen, "./data/tmp/homescreen.jpeg")
+            homescreenimage = Image.open("./data/tmp/homescreen.jpeg")
+
+            homescreenimage = homescreenimage.filter(ImageFilter.GaussianBlur(10))
+
+            homescreenimage.save('./data/tmp/homescreen.jpeg')
+
+            man.hasToTakeScreenshot = False
     
     if man.appSize > 0 and home.isLockscreen == True:
         clock.tick(90)

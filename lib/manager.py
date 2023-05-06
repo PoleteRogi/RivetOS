@@ -41,6 +41,8 @@ guiRender = True
 
 webcam = None
 
+hasToTakeScreenshot = False
+
 class Notification:
     def __init__(self, app, title, text):
         self.app = app
