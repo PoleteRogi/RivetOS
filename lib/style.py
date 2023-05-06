@@ -246,14 +246,14 @@ def rect(color, size, pos=None, borderRadius=0):
     y = yIndex + manager.appPos[1] * (1 - manager.appSize)
 
     if pos == None:
-        rect = (x, y, size[0], size[1])
+        rect = (int(x), int(y), size[0], size[1])
     else:
         rect = (pos[0] + manager.appPos[0] * (1 - manager.appSize), pos[1] + manager.appPos[1] * (1 - manager.appSize), size[0], size[1])
 
     if borderRadius == 0:
         pygame.draw.rect(manager.screen, color, rect)
     else:
-        pygame.draw.rect(manager.screen, color, rect, border_radius=borderRadius, width=size[1] / 2)
+        pygame.draw.rect(manager.screen, color, rect, border_radius=borderRadius, width=int(size[1] / 2))
 
     if direction == "x":
         xIndex += rect[2] + margin[0]
