@@ -235,7 +235,7 @@ def raw(img, size=None, pos=None):
     if direction == "y":
         yIndex += rect.height + margin[1]
 
-def rect(color, size, pos=None):
+def rect(color, size, pos=None, borderRadius=0):
     global xIndex
     global yIndex
 
@@ -250,7 +250,10 @@ def rect(color, size, pos=None):
     else:
         rect = (pos[0] + manager.appPos[0] * (1 - manager.appSize), pos[1] + manager.appPos[1] * (1 - manager.appSize), size[0], size[1])
 
-    pygame.draw.rect(manager.screen, color, rect)
+    if borderRadius == 0:
+        pygame.draw.rect(manager.screen, color, rect)
+    else:
+        pygame.draw.rect(manager.screen, color, rect, border_radius=borderRadius, width=size[1] / 2)
 
     if direction == "x":
         xIndex += rect[2] + margin[0]

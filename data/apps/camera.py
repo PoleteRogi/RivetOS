@@ -41,3 +41,5 @@ def camera(m):
             raw(m.webcamThumbnail, size=(600 * m.appSize, 400 * m.appSize), pos=(400 / 2 - 600 / 2, 800 / 2 - 400 / 2))
 
     rect(modify_color(BLACK, 1), (400 * m.appSize, 200 * m.appSize), pos=(0, 800 - 200))
+
+    rect(background, (75 * m.appSize, 75 * m.appSize), pos=(400 / 2 - 75 / 2, 800 - 200 + 200 / 2 - 75 / 2), borderRadius=100)

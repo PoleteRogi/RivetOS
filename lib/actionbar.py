@@ -127,6 +127,6 @@ def actionbar(m):
     lastActionBarHover = hover
 
 def render(m):
-    if m.guiRender == True:
+    if m.guiRender == True and m.isInApp == True:
         #actionbuttons(m)
         actionbar(m)

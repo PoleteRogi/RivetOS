@@ -101,4 +101,7 @@ while man.running:
         # flip() the display to put your work on screen
         pygame.display.flip()
     
-    clock.tick(60)
+    if man.appSize > 0 and home.isLockscreen == True:
+        clock.tick(90)
+    else:
+        clock.tick(60)
