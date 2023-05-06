@@ -1,7 +1,6 @@
 import pygame
 import lib.style as style
 from datetime import datetime
-import psutil
 
 normalFont = None
 titleFont = None
@@ -117,19 +116,19 @@ def render(home, screen, events):
 
             screen.blit(timeText, timeTextRect)
 
-        battery = psutil.sensors_battery()
+        # battery = psutil.sensors_battery()
 
-        plugged = battery.power_plugged
-        percent = str(battery.percent)
+        # plugged = battery.power_plugged
+        # percent = str(battery.percent)
         
-        if plugged == False:
-            percentText = normalFont.render(percent + '%', True, style.background)
-        else:
-            percentText = normalFont.render('✚ ' + percent + '%', True, style.background)
-        percentTextRect = percentText.get_rect()
-        percentTextRect.right = 400 - 8
-        percentTextRect.centery = 30 // 2
+        # if plugged == False:
+        #     percentText = normalFont.render(percent + '%', True, style.background)
+        # else:
+        #     percentText = normalFont.render('✚ ' + percent + '%', True, style.background)
+        # percentTextRect = percentText.get_rect()
+        # percentTextRect.right = 400 - 8
+        # percentTextRect.centery = 30 // 2
 
-        screen.blit(percentText, percentTextRect)
+        # screen.blit(percentText, percentTextRect)
 
     renderNotifications()
