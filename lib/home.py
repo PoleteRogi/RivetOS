@@ -3,6 +3,8 @@ import lib.style as style
 from datetime import datetime
 import math
 import json
+import os.path
+from os import path
 
 # LOAD WALLPAPER IMAGE
 wallpaper = None
@@ -30,6 +32,7 @@ lastHovers = []
 
 hasTakenHomeScreenshot = False
 homeScreenshot = None
+homeScreenshotNoBlur = None
 
 def appslist():
     appfileopen = open("./data/apps.json")
@@ -57,6 +60,7 @@ def render(screen, events, manager):
     global lastHovers
     global hasTakenHomeScreenshot
     global homeScreenshot
+    global homeScreenshotNoBlur
 
     if firstFrame:
         firstFrame = False
@@ -66,8 +70,11 @@ def render(screen, events, manager):
         normalFont = pygame.font.Font(style.TEXT_REGULAR, 16)
         lockscreenTimeFont = pygame.font.Font(style.TEXT_SEMIBOLD, 168)
 
-        if homeScreenshot == None:
-            homeScreenshot = pygame.image.load("./data/tmp/homescreen.jpeg").convert()
+    if homeScreenshot == None and path.exists("./data/tmp/homescreen.png"):
+        homeScreenshot = pygame.image.load("./data/tmp/homescreen.png").convert()
+    
+    if homeScreenshotNoBlur == None and path.exists("./data/tmp/homescreennoblur.png"):
+        homeScreenshotNoBlur = pygame.image.load('./data/tmp/homescreennoblur.png').convert()
 
     s = pygame.Surface(
         (400, 800), pygame.SRCALPHA
@@ -113,7 +120,7 @@ def render(screen, events, manager):
     if alpha != 256:
         s.set_alpha(alpha)
 
-    if manager.appSize < 0.001:
+    if manager.appSize < 0.0001:
         s.blit(
             wallpaperScaled,
             (400 / 2 - 400 * wallpaperScale / 2, 800 / 2 - 800 * wallpaperScale / 2),
@@ -123,6 +130,23 @@ def render(screen, events, manager):
             wallpaperScaled,
             (400 / 2 - 400 * (wallpaperScale - 0.2) / 2, 800 / 2 - 800 * (wallpaperScale - 0.2) / 2),
         )
+
+        realWallpaperScaled = pygame.transform.scale(
+            homeScreenshotNoBlur, (400 * (wallpaperScale - 0.2), 800 * (wallpaperScale - 0.2))
+        )
+
+        s2 = pygame.Surface(
+            (400, 800), pygame.SRCALPHA
+        )  # per-pixel alpha              # notice the alpha value in the color
+
+        s2.set_alpha(int(pow(1 - manager.appSize, 50) * 256))
+
+        s2.blit(
+            realWallpaperScaled,
+            (400 / 2 - 400 * ((wallpaperScale - 0.2) / 2), 800 / 2 - 800 * ((wallpaperScale - 0.2) / 2)),
+        )
+
+        s.blit(s2, (0, 0))
 
     if isLockscreen:
         now = datetime.now()
@@ -234,7 +258,7 @@ def render(screen, events, manager):
                 # x = manager.appPos[0] * (1 - manager.appSize)
             
             else: 
-                if manager.appSize > 0.001:
+                if manager.appSize > 0.0001:
                     renderAppsAfter = False
 
             if lastHovers[index] != hover:
@@ -252,7 +276,7 @@ def render(screen, events, manager):
 
                 s.blit(image, (x, y))
 
-                appNameText = normalFont.render(name, True, style.foreground)
+                appNameText = normalFont.render(name, True, style.foreground)    
 
                 appNameTextRect = appNameText.get_rect()
                 appNameTextRect.center = (

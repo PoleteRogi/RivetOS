@@ -98,21 +98,23 @@ while man.running:
 
     man.update()
 
+    man.updateScreen()
+
     if man.needToUpdate:
         # flip() the display to put your work on screen
         pygame.display.flip()
     
         if man.hasToTakeScreenshot:
-            pygame.image.save(screen, "./data/tmp/homescreen.jpeg")
-            homescreenimage = Image.open("./data/tmp/homescreen.jpeg")
+            pygame.image.save(screen, "./data/tmp/homescreennoblur.png")
+            homescreenimage = Image.open("./data/tmp/homescreennoblur.png")
 
             homescreenimage = homescreenimage.filter(ImageFilter.GaussianBlur(10))
 
-            homescreenimage.save('./data/tmp/homescreen.jpeg')
+            homescreenimage.save('./data/tmp/homescreen.png')
 
             man.hasToTakeScreenshot = False
     
-    if man.appSize > 0 and home.isLockscreen == True:
+    if man.appSize > 0 or home.isLockscreen == True:
         clock.tick(90)
     else:
         clock.tick(60)
