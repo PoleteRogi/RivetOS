@@ -286,7 +286,8 @@ def render(screen, events, manager):
 
                 rect.set_alpha((1 - pow(manager.appSize, 10)) * 256)
 
-                s.blit(appNameText, appNameTextRect)
+                if manager.appSize < 0.0001:
+                    s.blit(appNameText, appNameTextRect)
 
                 outlineSurface = pygame.Surface(
                     (400, 800), pygame.SRCALPHA
