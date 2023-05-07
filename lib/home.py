@@ -65,7 +65,7 @@ def render(screen, events, manager):
     if firstFrame:
         firstFrame = False
         
-        wallpaper = pygame.image.load("./assets/wallpaper.png").convert()
+        wallpaper = pygame.image.load("./assets/block.png").convert()
         wallpaper = pygame.transform.scale(wallpaper, (400, 800))
         normalFont = pygame.font.Font(style.TEXT_REGULAR, 16)
         lockscreenTimeFont = pygame.font.Font(style.TEXT_SEMIBOLD, 168)
@@ -139,7 +139,7 @@ def render(screen, events, manager):
             (400, 800), pygame.SRCALPHA
         )  # per-pixel alpha              # notice the alpha value in the color
 
-        s2.set_alpha(int(pow(1 - manager.appSize, 50) * 256))
+        s2.set_alpha(int(pow(1 - manager.appSize, 25) * 256))
 
         s2.blit(
             realWallpaperScaled,

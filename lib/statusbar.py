@@ -132,3 +132,6 @@ def render(home, screen, events):
         # screen.blit(percentText, percentTextRect)
 
     renderNotifications()
+
+    # dynamic island
+    # pygame.draw.rect(screen, (0, 0, 0), (400 / 2 - 120 / 2, 7, 120, 24), 12, 50)
