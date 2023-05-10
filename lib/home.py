@@ -44,6 +44,8 @@ def appslist():
 
 apps = appslist()
 
+sin = 0
+
 def render(screen, events, manager):
     global alpha
     global wallpaperScale
@@ -61,6 +63,9 @@ def render(screen, events, manager):
     global hasTakenHomeScreenshot
     global homeScreenshot
     global homeScreenshotNoBlur
+    global sin
+
+    sin += 1
 
     if firstFrame:
         firstFrame = False
@@ -106,7 +111,7 @@ def render(screen, events, manager):
         compareString = compareString + '.000'
 
     if str(wallpaperScale)[:5] != compareString and not ('999' in str(wallpaperScale)):
-        if manager.appSize < 0.001:
+        if manager.appSize < 0.00001:
             wallpaperScaled = pygame.transform.scale(
                 wallpaper, (400 * wallpaperScale, 800 * wallpaperScale)
             )
@@ -120,7 +125,7 @@ def render(screen, events, manager):
     if alpha != 256:
         s.set_alpha(alpha)
 
-    if manager.appSize < 0.0001:
+    if manager.appSize < 0.00001:
         s.blit(
             wallpaperScaled,
             (400 / 2 - 400 * wallpaperScale / 2, 800 / 2 - 800 * wallpaperScale / 2),
@@ -157,15 +162,17 @@ def render(screen, events, manager):
         hourText = lockscreenTimeFont.render(hours, True, style.foreground)
 
         hourTextRect = hourText.get_rect()
-        hourTextRect.center = (400 // 2, 400 // 2)
+        hourTextRect.center = (400 // 2, 800 // 2 - 168 / 2)
 
         minuteText = lockscreenTimeFont.render(minutes, True, style.foreground)
 
         minuteTextRect = minuteText.get_rect()
-        minuteTextRect.center = (400 // 2, (400 // 2) + 168 - 10)
+        minuteTextRect.center = (400 // 2, (800 // 2 - 168 / 2) + 168 - 10)
 
         s.blit(hourText, hourTextRect)
         s.blit(minuteText, minuteTextRect)
+
+        wallpaperScaleGoal = 1.1 + math.sin(sin / 100) * 0.1
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONUP:
@@ -258,7 +265,7 @@ def render(screen, events, manager):
                 # x = manager.appPos[0] * (1 - manager.appSize)
             
             else: 
-                if manager.appSize > 0.0001:
+                if manager.appSize > 0.00001:
                     renderAppsAfter = False
 
             if lastHovers[index] != hover:

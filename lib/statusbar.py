@@ -134,4 +134,4 @@ def render(home, screen, events):
     renderNotifications()
 
     # dynamic island
-    # pygame.draw.rect(screen, (0, 0, 0), (400 / 2 - 120 / 2, 7, 120, 24), 12, 50)
+    # pygame.draw.rect(screen, (0, 0, 0), (400 / 2 - 100 / 2, 7, 100, 24), 12, 50)
