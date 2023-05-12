@@ -46,6 +46,8 @@ apps = appslist()
 
 sin = 0
 
+iconshadow = None
+
 def render(screen, events, manager):
     global alpha
     global wallpaperScale
@@ -64,6 +66,10 @@ def render(screen, events, manager):
     global homeScreenshot
     global homeScreenshotNoBlur
     global sin
+    global iconshadow
+
+    if iconshadow == None:
+        iconshadow = pygame.image.load("./assets/app.png").convert_alpha()
 
     sin += 1
 
@@ -73,7 +79,7 @@ def render(screen, events, manager):
         wallpaper = pygame.image.load("./assets/block.png").convert()
         wallpaper = pygame.transform.scale(wallpaper, (400, 800))
         normalFont = pygame.font.Font(style.TEXT_REGULAR, 16)
-        lockscreenTimeFont = pygame.font.Font(style.TEXT_SEMIBOLD, 168)
+        lockscreenTimeFont = pygame.font.Font(style.TEXT_SEMIBOLD, 186)
 
     if homeScreenshot == None and path.exists("./data/tmp/homescreen.png"):
         homeScreenshot = pygame.image.load("./data/tmp/homescreen.png").convert()
@@ -86,7 +92,7 @@ def render(screen, events, manager):
     )  # per-pixel alpha              # notice the alpha value in the color
 
     if alpha < 256:
-        alpha += (256 - alpha) / 10
+        alpha += (256 - alpha) / 20
 
     if alpha > 256:
         alpha = 256
@@ -162,15 +168,21 @@ def render(screen, events, manager):
         hourText = lockscreenTimeFont.render(hours, True, style.foreground)
 
         hourTextRect = hourText.get_rect()
-        hourTextRect.center = (400 // 2, 800 // 2 - 168 / 2)
+        hourTextRect.center = (400 // 2, 800 // 2 - 186 / 2)
+
+        doublePointText = pygame.font.Font(style.TEXT_REGULAR, 32).render('. .', True, style.foreground)
+
+        doublePointTextRect = doublePointText.get_rect()
+        doublePointTextRect.center = (400 // 2, 800 // 2 - 20)
 
         minuteText = lockscreenTimeFont.render(minutes, True, style.foreground)
 
         minuteTextRect = minuteText.get_rect()
-        minuteTextRect.center = (400 // 2, (800 // 2 - 168 / 2) + 168 - 10)
+        minuteTextRect.center = (400 // 2, (800 // 2 - 186 / 2) + 186 - 10)
 
         s.blit(hourText, hourTextRect)
         s.blit(minuteText, minuteTextRect)
+        s.blit(doublePointText, doublePointTextRect)
 
         wallpaperScaleGoal = 1.1 + math.sin(sin / 100) * 0.1
 
@@ -241,6 +253,7 @@ def render(screen, events, manager):
                 iconsize = 83
                 x -= 5
                 y -= 5
+                iconshadowscaled = pygame.transform.scale(iconshadow, (iconsize + 19, iconsize + 19))
                 if click[0] == 1:
                     appPos = (originX + iconsize / 2, originY + iconsize / 2)
                     # OPEN APP
@@ -249,9 +262,11 @@ def render(screen, events, manager):
 
                 if (file.split('.')[0] in manager.openApps) == False:
                     image = pygame.transform.scale(appIcons[index], (iconsize, iconsize))
+                    
             else:
                 hover = False
                 iconsize = 73
+                iconshadowscaled = pygame.transform.scale(iconshadow, (iconsize + 19, iconsize + 19))
             
             renderOtherApps = True
 
@@ -282,6 +297,7 @@ def render(screen, events, manager):
                 image.blit(rect, (0, 0), None, pygame.BLEND_RGBA_MIN)
 
                 s.blit(image, (x, y))
+                s.blit(iconshadowscaled, (x - 10, y - 10 + 2))
 
                 appNameText = normalFont.render(name, True, style.foreground)    
 

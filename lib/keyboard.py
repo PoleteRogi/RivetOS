@@ -35,6 +35,10 @@ def render(m):
 
         pygame.draw.rect(m.screen, (253, 254, 242), (0, 800 - 216 + 216 * (1 - keyboardPosScale), 400, 216))
 
+        shadowScaled = pygame.transform.scale(style.rectShadow, (400 * 2, 216 * 2))
+
+        borderSurface.blit(shadowScaled, (-200, 800 - 216 + 216 * (1 - keyboardPosScale) - 34, 400, 216))
+
         borderSurface.set_alpha(52)
 
         m.screen.blit(borderSurface, (0, 0))
