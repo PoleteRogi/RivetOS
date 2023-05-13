@@ -191,156 +191,157 @@ def render(screen, events, manager):
                 isLockscreen = False
                 wallpaperScaleGoal = 1.2
     else:
-        iconScaleGoal = 1
-        
-        index = 0
+        if manager.appSize < 1:
+            iconScaleGoal = 1
+            
+            index = 0
 
-        row = 0
-        column = 0
-        
-        if (iconScale > 0.9999 and iconScale < 1.0001) and hasTakenHomeScreenshot == False and manager.isInApp == False:
-            hasTakenHomeScreenshot = True
-            manager.hasToTakeScreenshot = True
+            row = 0
+            column = 0
+            
+            if (iconScale > 0.9999 and iconScale < 1.0001) and hasTakenHomeScreenshot == False and manager.isInApp == False:
+                hasTakenHomeScreenshot = True
+                manager.hasToTakeScreenshot = True
 
-        for app in apps:
-            renderAppsAfter = True
+            for app in apps:
+                renderAppsAfter = True
 
-            name = app["name"]
-            icon = app["icon"]
-            file = app["file"]
+                name = app["name"]
+                icon = app["icon"]
+                file = app["file"]
 
-            if len(lastHovers) - 1 != index:
-                lastHovers.append(index)
+                if len(lastHovers) - 1 != index:
+                    lastHovers.append(index)
 
-            # 3 ROWS
-            # 3 COLUMNS
+                # 3 ROWS
+                # 3 COLUMNS
 
-            columnsize = ((400) / 3) - 20
-            rowsize = ((610) / 3) - 20
+                columnsize = ((400) / 3) - 20
+                rowsize = ((610) / 3) - 20
 
-            iconsize = 73
-
-            if len(appIcons) <= index:
-                iconimg = pygame.image.load("./assets/apps/" + icon).convert_alpha()
-                appIcons.append(iconimg)
-                image = pygame.transform.scale(appIcons[index], (iconsize, iconsize))
-                appIconsScaled.append(image)
-
-            else:
-                image = appIconsScaled[index]
-
-            originX = (
-                (column * columnsize + 10 * 4) * iconScale
-                + (columnsize / 2)
-                - (iconsize / 2)
-            )
-            originY = (row * rowsize + 10 * 4) + (rowsize / 2) - (iconsize / 2)
-
-            x = originX
-            y = originY
-
-            mouse = pygame.mouse.get_pos()
-            click = pygame.mouse.get_pressed()
-
-            hover = False
-
-            if (
-                x + iconsize > mouse[0] > x
-                and y + iconsize > mouse[1] > y
-                and manager.isInApp == False
-            ):
-                hover = True
-                iconsize = 83
-                x -= 5
-                y -= 5
-                iconshadowscaled = pygame.transform.scale(iconshadow, (iconsize + 19, iconsize + 19))
-                if click[0] == 1:
-                    appPos = (originX + iconsize / 2, originY + iconsize / 2)
-                    # OPEN APP
-                    manager.openApp(file, appPos)
-                    wallpaperScaleGoal = 2
-
-                if (file.split('.')[0] in manager.openApps) == False:
-                    image = pygame.transform.scale(appIcons[index], (iconsize, iconsize))
-                    
-            else:
-                hover = False
                 iconsize = 73
-                iconshadowscaled = pygame.transform.scale(iconshadow, (iconsize + 19, iconsize + 19))
-            
-            renderOtherApps = True
 
-            if file.split('.')[0] in manager.openApps:
-                iconsize = 73 + (727 * manager.appSize)
-                image = pygame.transform.scale(appIcons[index], (iconsize, iconsize))
+                if len(appIcons) <= index:
+                    iconimg = pygame.image.load("./assets/apps/" + icon).convert_alpha()
+                    appIcons.append(iconimg)
+                    image = pygame.transform.scale(appIcons[index], (iconsize, iconsize))
+                    appIconsScaled.append(image)
 
-                x = originX * (1 - manager.appSize) + (400 / 2 - iconsize / 2) * manager.appSize
-                y = originY * (1 - manager.appSize) + (800 / 2 - iconsize / 2) * manager.appSize
+                else:
+                    image = appIconsScaled[index]
 
-                # x = manager.appPos[0] * (1 - manager.appSize)
-            
-            else: 
-                if manager.appSize > 0.00001:
-                    renderAppsAfter = False
-
-            if lastHovers[index] != hover:
-                manager.updateScreen()
-
-            if renderAppsAfter:
-                lastHovers[index] = hover
-
-                size = image.get_size()
-                rect = pygame.Surface(size, pygame.SRCALPHA)
-
-                pygame.draw.rect(rect, (255, 255, 255), (0, 0, *size), border_radius=50)
-
-                image.blit(rect, (0, 0), None, pygame.BLEND_RGBA_MIN)
-
-                s.blit(image, (x, y))
-                s.blit(iconshadowscaled, (x - 10, y - 10 + 2))
-
-                appNameText = normalFont.render(name, True, style.foreground)    
-
-                appNameTextRect = appNameText.get_rect()
-                appNameTextRect.center = (
-                    x + (iconsize / 2),
-                    y + (iconsize / 2) + iconsize - 20,
+                originX = (
+                    (column * columnsize + 10 * 4) * iconScale
+                    + (columnsize / 2)
+                    - (iconsize / 2)
                 )
+                originY = (row * rowsize + 10 * 4) + (rowsize / 2) - (iconsize / 2)
 
-                rect.set_alpha((1 - pow(manager.appSize, 10)) * 256)
+                x = originX
+                y = originY
 
-                if manager.appSize < 0.0001:
-                    s.blit(appNameText, appNameTextRect)
+                mouse = pygame.mouse.get_pos()
+                click = pygame.mouse.get_pressed()
 
-                outlineSurface = pygame.Surface(
-                    (400, 800), pygame.SRCALPHA
-                )  # per-pixel alpha              # notice the alpha value in the color
+                hover = False
 
-                pygame.draw.rect(
-                    outlineSurface,
-                    (0, 0, 0),
-                    pygame.Rect(
-                        (column * columnsize + 10 * 3) * iconScale
-                        + (columnsize / 2)
-                        - (iconsize / 2)
-                        - 2,
-                        (row * rowsize + 10 * 3) + (rowsize / 2) - (iconsize / 2) - 2,
-                        iconsize + 4,
-                        iconsize + 4,
-                    ),
-                    2,
-                    100,
-                )
+                if (
+                    x + iconsize > mouse[0] > x
+                    and y + iconsize > mouse[1] > y
+                    and manager.isInApp == False
+                ):
+                    hover = True
+                    iconsize = 83
+                    x -= 5
+                    y -= 5
+                    iconshadowscaled = pygame.transform.scale(iconshadow, (iconsize + 19, iconsize + 19))
+                    if click[0] == 1:
+                        appPos = (originX + iconsize / 2, originY + iconsize / 2)
+                        # OPEN APP
+                        manager.openApp(file, appPos)
+                        wallpaperScaleGoal = 2
 
-                # outlineSurface.set_alpha(25.)
+                    if (file.split('.')[0] in manager.openApps) == False:
+                        image = pygame.transform.scale(appIcons[index], (iconsize, iconsize))
+                        
+                else:
+                    hover = False
+                    iconsize = 73
+                    iconshadowscaled = pygame.transform.scale(iconshadow, (iconsize + 19, iconsize + 19))
+                
+                renderOtherApps = True
 
-                # s.blit(outlineSurface, (0, 0))
+                if file.split('.')[0] in manager.openApps:
+                    iconsize = 73 + (727 * manager.appSize)
+                    image = pygame.transform.scale(appIcons[index], (iconsize, iconsize))
 
-            # UPDATE INDEX
-            index += 1
-            column += 1
-            if column > 2:
-                column = 0
-                row += 1
+                    x = originX * (1 - manager.appSize) + (400 / 2 - iconsize / 2) * manager.appSize
+                    y = originY * (1 - manager.appSize) + (800 / 2 - iconsize / 2) * manager.appSize
+
+                    # x = manager.appPos[0] * (1 - manager.appSize)
+                
+                else: 
+                    if manager.appSize > 0.00001:
+                        renderAppsAfter = False
+
+                if lastHovers[index] != hover:
+                    manager.updateScreen()
+
+                if renderAppsAfter:
+                    lastHovers[index] = hover
+
+                    size = image.get_size()
+                    rect = pygame.Surface(size, pygame.SRCALPHA)
+
+                    pygame.draw.rect(rect, (255, 255, 255), (0, 0, *size), border_radius=50)
+
+                    image.blit(rect, (0, 0), None, pygame.BLEND_RGBA_MIN)
+
+                    s.blit(image, (x, y))
+                    s.blit(iconshadowscaled, (x - 10, y - 10 + 2))
+
+                    appNameText = normalFont.render(name, True, style.foreground)    
+
+                    appNameTextRect = appNameText.get_rect()
+                    appNameTextRect.center = (
+                        x + (iconsize / 2),
+                        y + (iconsize / 2) + iconsize - 20,
+                    )
+
+                    rect.set_alpha((1 - pow(manager.appSize, 10)) * 256)
+
+                    if manager.appSize < 0.0001:
+                        s.blit(appNameText, appNameTextRect)
+
+                    outlineSurface = pygame.Surface(
+                        (400, 800), pygame.SRCALPHA
+                    )  # per-pixel alpha              # notice the alpha value in the color
+
+                    pygame.draw.rect(
+                        outlineSurface,
+                        (0, 0, 0),
+                        pygame.Rect(
+                            (column * columnsize + 10 * 3) * iconScale
+                            + (columnsize / 2)
+                            - (iconsize / 2)
+                            - 2,
+                            (row * rowsize + 10 * 3) + (rowsize / 2) - (iconsize / 2) - 2,
+                            iconsize + 4,
+                            iconsize + 4,
+                        ),
+                        2,
+                        100,
+                    )
+
+                    # outlineSurface.set_alpha(25.)
+
+                    # s.blit(outlineSurface, (0, 0))
+
+                # UPDATE INDEX
+                index += 1
+                column += 1
+                if column > 2:
+                    column = 0
+                    row += 1
 
     screen.blit(s, (0, 0))

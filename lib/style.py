@@ -610,9 +610,9 @@ def titleBar(text, color=primary):
 
     rect = rectShadow.get_rect()
 
-    rect.topleft = (x - (width / 25), y)
-    rect.width = (width) * 1.05
-    rect.height = (height) * 1.05
+    rect.topleft = (x - (width / 10), y - 10)
+    rect.width = (width) * 1.155
+    rect.height = (height) * 1.19
 
     shadowScaled = pygame.transform.scale(rectShadow, (rect.width, rect.height))
 
