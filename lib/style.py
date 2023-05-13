@@ -105,16 +105,16 @@ def initApp(m):
         surface,
         background,
         (
-            (manager.appPos[0] - 73 / 2 - 15) * (1 - manager.appSize),
-            (manager.appPos[1] - 73 / 2 - 15) * (1 - manager.appSize),
-            800 * manager.appSize + 73,
-            800 * manager.appSize + 73,
+            m.appX,
+            m.appY,
+            (800 - 73) * manager.appSize + 73,
+            (800 - 73) * manager.appSize + 73,
         ),
         int(800),
-        int(50 * (1 - manager.appSize))
+        int(50)
     )
 
-    surface.set_alpha(manager.appSize * 256)
+    surface.set_alpha(pow(manager.appSize, 0.5) * 256)
 
     manager.screen.blit(surface, (0, 0))
 

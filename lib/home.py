@@ -220,6 +220,7 @@ def render(screen, events, manager):
                 rowsize = ((610) / 3) - 20
 
                 iconsize = 73
+                manager.iconsize = iconsize
 
                 if len(appIcons) <= index:
                     iconimg = pygame.image.load("./assets/apps/" + icon).convert_alpha()
@@ -252,6 +253,7 @@ def render(screen, events, manager):
                 ):
                     hover = True
                     iconsize = 83
+                    manager.iconsize = iconsize
                     x -= 5
                     y -= 5
                     iconshadowscaled = pygame.transform.scale(iconshadow, (iconsize + 19, iconsize + 19))
@@ -267,16 +269,20 @@ def render(screen, events, manager):
                 else:
                     hover = False
                     iconsize = 73
+                    manager.iconsize = iconsize
                     iconshadowscaled = pygame.transform.scale(iconshadow, (iconsize + 19, iconsize + 19))
                 
                 renderOtherApps = True
 
                 if file.split('.')[0] in manager.openApps:
                     iconsize = 73 + (727 * manager.appSize)
+                    manager.iconsize = iconsize
                     image = pygame.transform.scale(appIcons[index], (iconsize, iconsize))
 
                     x = originX * (1 - manager.appSize) + (400 / 2 - iconsize / 2) * manager.appSize
+                    manager.appX = x
                     y = originY * (1 - manager.appSize) + (800 / 2 - iconsize / 2) * manager.appSize
+                    manager.appY = y
 
                     # x = manager.appPos[0] * (1 - manager.appSize)
                 
@@ -297,8 +303,9 @@ def render(screen, events, manager):
 
                     image.blit(rect, (0, 0), None, pygame.BLEND_RGBA_MIN)
 
+                    if manager.appSize < 0.0001:
+                        s.blit(iconshadowscaled, (x - 10, y - 10 + 2))
                     s.blit(image, (x, y))
-                    s.blit(iconshadowscaled, (x - 10, y - 10 + 2))
 
                     appNameText = normalFont.render(name, True, style.foreground)    
 

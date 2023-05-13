@@ -13,8 +13,8 @@ def autosave(m):
 def notes(m):
     initApp(m)
 
-    title = titleBar('Notes', color=GREEN)
+    # title = titleBar('Notes', color=GREEN)
 
-    txtArea = textArea('m.notesText', 400, 500)
+    # txtArea = textArea('m.notesText', 400, 500)
 
-    autosave(m)
+    # autosave(m)
