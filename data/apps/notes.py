@@ -4,7 +4,7 @@ def init(m):
     m.notesText = m.read_file('notes/notes.txt')
     m.lastNotesText = m.notesText
 
-    #web('https://soypol.com', 0, 100, 400, 600)
+    # web('https://soypol.com', 0, 100, 400, 600)
 
 def autosave(m):
     if m.notesText != m.lastNotesText:
@@ -20,5 +20,3 @@ def notes(m):
     # txtArea = textArea('m.notesText', 400, 500)
 
     # autosave(m)
-
-    # a
