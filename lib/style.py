@@ -1,4 +1,7 @@
 import pygame
+import os
+import sys
+import _thread
 
 BLACK = (57, 62, 65)
 WHITE = (246, 247, 235)
@@ -34,6 +37,7 @@ isScroll = False
 
 buttonShadow = None
 rectShadow = None
+iconShadow = None
 
 def modify_color(color, intensity):
     r = min(max(color[0] * intensity, 0), 255)
@@ -84,12 +88,16 @@ def initApp(m):
     global surface
     global buttonShadow
     global rectShadow
+    global iconShadow
 
     if buttonShadow == None:
         buttonShadow = pygame.image.load('./assets/button.png').convert_alpha()
     
     if rectShadow == None:
         rectShadow = pygame.image.load('./assets/rect.png').convert_alpha()
+
+    if iconShadow == None:
+        iconShadow = pygame.image.load('./assets/app.png').convert_alpha()
 
     xIndex = padding[0]
     yIndex = padding[1]
@@ -452,7 +460,7 @@ def textArea(text, width, height):
     if direction == "y":
         yIndex += textRect.height + 20 + margin[1]
 
-def button(text, action, color=None, width=None, x=None, y=None):
+def button(text, action, color=None, width=None, height=None, posX=None, posY=None, borderRadius=10):
     global xIndex
     global yIndex
     global foreground
@@ -466,18 +474,21 @@ def button(text, action, color=None, width=None, x=None, y=None):
     if normalFont == None:
         normalFont = pygame.font.Font(weight, 16)
     
-    if x == None:
+    x = 0
+    y = 0
+
+    if posX == None:
         x = xIndex + manager.appPos[0] * (1 - manager.appSize)
         if isScroll:
             y = yIndex + manager.appPos[1] * (1 - manager.appSize) - manager.scroll
         else:
             y = yIndex + manager.appPos[1] * (1 - manager.appSize)
     else:
-        x = x * (1 - manager.appSize)
+        x = posX * (1 - manager.appSize)
         if isScroll:
-            y * (1 - manager.appSize) - manager.scroll
+            y = posY * (1 - manager.appSize) - manager.scroll
         else:
-            y * (1 - manager.appSize)
+            y = posY * (1 - manager.appSize)
 
     oldweight = weight
     weight = TEXT_SEMIBOLD
@@ -502,7 +513,10 @@ def button(text, action, color=None, width=None, x=None, y=None):
     textRect.top = y + 10
 
     if width != None:
-        textRect.width = width
+        textRect.width = width - 20
+
+    if height != None:
+        textRect.height = height - 20
 
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
@@ -515,8 +529,8 @@ def button(text, action, color=None, width=None, x=None, y=None):
         x + textRect.width + 20 > mouse[0] > x
         and y + textRect.height + 20 > mouse[1] > y
     ):
-        xIndex -= 2
-        yIndex -= 2
+        x -= 2
+        y -= 2
         textRect.width += 4
         textRect.height += 4
         hover = True
@@ -525,28 +539,46 @@ def button(text, action, color=None, width=None, x=None, y=None):
 
     manager.updateScreen()
     
-    x = xIndex + manager.appPos[0] * (1 - manager.appSize)
-    if isScroll:
-        y = yIndex + manager.appPos[1] * (1 - manager.appSize) - manager.scroll
+    if posX == None:
+        x = xIndex + manager.appPos[0] * (1 - manager.appSize)
+        if isScroll:
+            y = yIndex + manager.appPos[1] * (1 - manager.appSize) - manager.scroll
+        else:
+            y = yIndex + manager.appPos[1] * (1 - manager.appSize)
     else:
-        y = yIndex + manager.appPos[1] * (1 - manager.appSize)
+        x = posX * (manager.appSize)
+        if isScroll:
+            y = posY * (manager.appSize) - manager.scroll
+        else:
+            y = posY * (manager.appSize)
 
-    rect = buttonShadow.get_rect()
+    if borderRadius < 100:
+        rect = buttonShadow.get_rect()
 
-    rect.topleft = (x - ((textRect.width + 20) / 25), y)
-    rect.width = (textRect.width + 20) * 1.05
-    rect.height = (textRect.height + 20) * 1.05
+        rect.topleft = (x - ((textRect.width + 20) / 25), y)
+        rect.width = (textRect.width + 20) * 1.05
+        rect.height = (textRect.height + 20) * 1.05
 
-    shadowScaled = pygame.transform.scale(buttonShadow, (rect.width, rect.height))
+        shadowScaled = pygame.transform.scale(buttonShadow, (rect.width, rect.height))
 
-    manager.screen.blit(shadowScaled, rect)
+        manager.screen.blit(shadowScaled, rect)
+    else:
+        rect = iconShadow.get_rect()
+
+        rect.topleft = (x - ((textRect.width + 20) / 25), y)
+        rect.width = (textRect.width + 20) * 1.05
+        rect.height = (textRect.height + 20) * 1.05
+
+        shadowScaled = pygame.transform.scale(iconShadow, (rect.width, rect.height))
+
+        manager.screen.blit(shadowScaled, rect)
 
     if color == None:
-        pygame.draw.rect(manager.screen, primary, (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), 10)
-        pygame.draw.rect(manager.screen, modify_color(primary, 0.9), (x, y, textRect.width + 20, textRect.height + 20), 1, 10)
+        pygame.draw.rect(manager.screen, primary, (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), borderRadius)
+        pygame.draw.rect(manager.screen, modify_color(primary, 0.9), (x, y, textRect.width + 20, textRect.height + 20), 1, borderRadius)
     else:
-        pygame.draw.rect(manager.screen, color, (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), 10)
-        pygame.draw.rect(manager.screen, modify_color(color, 0.9), (x, y, textRect.width + 20, textRect.height + 20), 1, 10)
+        pygame.draw.rect(manager.screen, color, (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), borderRadius)
+        pygame.draw.rect(manager.screen, modify_color(color, 0.9), (x, y, textRect.width + 20, textRect.height + 20), 1, borderRadius)
 
     # borderSurface = pygame.Surface((400, 800), pygame.SRCALPHA)
     
@@ -558,8 +590,8 @@ def button(text, action, color=None, width=None, x=None, y=None):
     # manager.screen.blit(borderSurface, (0, 0))
 
     if hover:
-        xIndex += 2
-        yIndex += 2
+        x += 2
+        y += 2
 
         if click[0] == 1:
             if action != None:
@@ -600,11 +632,11 @@ def titleBar(text, color=primary):
     xIndex = 15
     yIndex = 45
 
-    x = 0 + manager.appPos[0] * (1 - manager.appSize)
+    x = max(manager.appX, 0)
     if isScroll:
-        y = 0 + manager.appPos[1] * (1 - manager.appSize) - 5 - manager.scroll
+        y = manager.appY - manager.scroll
     else:
-        y = 0 + manager.appPos[1] * (1 - manager.appSize) - 5
+        y = manager.appY - 5
     width = 400 * manager.appSize + 1
     height = 75 * manager.appSize + 5
 
@@ -616,9 +648,11 @@ def titleBar(text, color=primary):
 
     shadowScaled = pygame.transform.scale(rectShadow, (rect.width, rect.height))
 
-    manager.screen.blit(shadowScaled, rect)
+    if not (manager.appSize < 1):
+        manager.screen.blit(shadowScaled, rect)
 
-    pygame.draw.rect(manager.screen, color, (x, y, width, height), border_radius=int(50 * (1 - manager.appSize)))
+    #pygame.draw.rect(manager.screen, color, (x, y, width, height), border_radius=int(50 * (1 - manager.appSize)))
+    pygame.draw.rect(manager.screen, color, (x, y, width, height))
     pygame.draw.rect(manager.screen, modify_color(color, 0.8), (x, y + height - 1, width, 1))
 
     if color == BLACK or color == GREEN or color == RED or color == BLUE:
@@ -696,3 +730,9 @@ def alert(text, title):
 
     if manager.alertOpacity != manager.alertOpacityGoal:
         manager.updateScreen()
+
+def web(url, x, y, width, height):
+    _thread.start_new_thread( create_web_window, (url, x, y, width, height) )
+
+def create_web_window(url, x, y, width, height):
+    os.system('py lib/rwebsdk/rwebsdk.py ' + str(url) + ' ' + str(x) + ' ' + str(y) + ' ' + str(width) + ' ' +  str(height))

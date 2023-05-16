@@ -123,7 +123,6 @@ def update():
 
     if appSize < appSizeGoal:
         appSize += (appSizeGoal - appSize) / 5
-
     if appSize > appSizeGoal:
         appSize -= (appSize - appSizeGoal) / 5
 

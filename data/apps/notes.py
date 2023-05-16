@@ -4,6 +4,8 @@ def init(m):
     m.notesText = m.read_file('notes/notes.txt')
     m.lastNotesText = m.notesText
 
+    #web('https://soypol.com', 0, 100, 400, 600)
+
 def autosave(m):
     if m.notesText != m.lastNotesText:
         m.lastNotesText = m.notesText

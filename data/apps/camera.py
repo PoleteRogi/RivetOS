@@ -40,6 +40,9 @@ def camera(m):
         else:
             raw(m.webcamThumbnail, size=(600 * m.appSize, 400 * m.appSize), pos=(400 / 2 - 600 / 2, 800 / 2 - 400 / 2))
 
-    rect(modify_color(BLACK, 1), (400 * m.appSize, 200 * m.appSize), pos=(0, 800 - 200))
+    button('', action=None, color=WHITE, width=74, height=74, posX=400 / 2 - 74 / 2, posY=800 - 200 + 200 / 2 - 74 / 2, borderRadius=100)
+    
+    # pygame.draw.rect(m.screen, WHITE, rect=(400 / 2 - 75 / 2, 800 - 200 + 200 / 2 - 75 / 2, 75, 75))
 
-    rect(background, (75 * m.appSize, 75 * m.appSize), pos=(400 / 2 - 75 / 2, 800 - 200 + 200 / 2 - 75 / 2), borderRadius=100)
+
+    #, borderRadius=100
