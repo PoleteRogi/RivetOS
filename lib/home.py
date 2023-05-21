@@ -48,6 +48,8 @@ sin = 0
 
 iconshadow = None
 
+isInPinLock = False
+
 def render(screen, events, manager):
     global alpha
     global wallpaperScale
@@ -67,6 +69,7 @@ def render(screen, events, manager):
     global homeScreenshotNoBlur
     global sin
     global iconshadow
+    global isInPinLock
 
     if iconshadow == None:
         iconshadow = pygame.image.load("./assets/app.png").convert_alpha()
@@ -180,16 +183,42 @@ def render(screen, events, manager):
         minuteTextRect = minuteText.get_rect()
         minuteTextRect.center = (400 // 2, (800 // 2 - 186 / 2) + 186 - 10)
 
-        s.blit(hourText, hourTextRect)
-        s.blit(minuteText, minuteTextRect)
-        s.blit(doublePointText, doublePointTextRect)
+        if isInPinLock == False:
+            s.blit(hourText, hourTextRect)
+            s.blit(minuteText, minuteTextRect)
+            s.blit(doublePointText, doublePointTextRect)
+        else:
+            trBlack = pygame.Surface((400, 800), pygame.SRCALPHA)     
+            trBlack.fill((0, 0, 0))
+            trBlack.set_alpha((wallpaperScale - 1) / 0.75 * 200)
+            s.blit(trBlack, (0, 0))
 
-        wallpaperScaleGoal = 1.1 + math.sin(sin / 100) * 0.1
+            
+            enterYourPinText = pygame.font.Font(style.TEXT_REGULAR, 16).render('Please enter your pin', True, style.WHITE)
+
+            enterYourPinTextRect = enterYourPinText.get_rect()
+            enterYourPinTextRect.center = (400 // 2, (wallpaperScale - 1) / 0.75 * (400 // 2))
+
+            s.blit(enterYourPinText, enterYourPinTextRect)
+            
+
+        if isInPinLock == False:
+            wallpaperScaleGoal = 1.1 + math.sin(sin / 100) * 0.1
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONUP:
-                isLockscreen = False
-                wallpaperScaleGoal = 1.2
+                if manager.pin == None:
+                    isLockscreen = False
+                    wallpaperScaleGoal = 1.2
+                else:
+                    # PIN SCREEN
+
+                    isInPinLock = True
+                    wallpaperScaleGoal = 1.75
+                    # manager.appSizeGoal = 1
+
+                    # manager.isInInput = True
+
     else:
         if manager.appSize < 1:
             iconScaleGoal = 1

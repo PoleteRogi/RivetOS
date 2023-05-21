@@ -3,8 +3,8 @@ from lib.style import *
 def whatIsYourNamePage():
     manager.setupIndex = 1
     manager.charIndex = 0
-    manager.loadingIndicator = pygame.image.load('./assets/icons/system/SpinLoading.png').convert_alpha()
-    manager.loadingIndicator = pygame.transform.scale(manager.loadingIndicator, (40, 40))
+    manager.loadingIndicatorOriginal = pygame.image.load('./assets/icons/system/SpinLoading.png').convert_alpha()
+    manager.loadingIndicatorOriginal = pygame.transform.scale(manager.loadingIndicatorOriginal, (40, 40))
 
     manager.setTimeout(loadPage, 10000)
 
@@ -13,6 +13,8 @@ def loadPage():
 
 def init(m):
     m.setupIndex = 0
+    m.appPos = (0, 0)
+    m.appSize = 1
     m.setTimeout(whatIsYourNamePage, 5000)
     pass
 
@@ -40,15 +42,23 @@ def setup(m):
         if m.charIndex < len(text):
             m.charIndex += 0.01
 
-        set_foreground(modify_color(background, 0.9))
+        print(m.charIndex)
+
+        set_foreground(modify_color(foreground, max(8 - (m.charIndex / 6 * 10), 1)))
         label(text, center=True)
         set_foreground(foreground)
-        label(text[0:round(m.charIndex)], center=True)
 
         # Spinning Loading Indicator
 
-        # m.loadingIndicator = pygame.transform.rotate(m.loadingIndicator, 1)
+        angle = m.charIndex * 500
+        x = 400 / 2
+        y = 800 - 400 / 2
+
+        rotated_image = pygame.transform.rotate(m.loadingIndicatorOriginal, angle)
+        new_rect = rotated_image.get_rect(center = m.loadingIndicatorOriginal.get_rect(center = (x, y)).center)
+
+        m.loadingIndicator = rotated_image
         
-        # raw(m.loadingIndicator)
+        m.screen.blit(m.loadingIndicator, new_rect)
 
         m.updateScreen()

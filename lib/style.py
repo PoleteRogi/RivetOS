@@ -109,18 +109,30 @@ def initApp(m):
 
     surface = pygame.Surface((400, 800), pygame.SRCALPHA)
 
-    pygame.draw.rect(
-        surface,
-        background,
-        (
-            m.appX,
-            m.appY,
-            (800 - 73) * manager.appSize + 73,
-            (800 - 73) * manager.appSize + 73,
-        ),
-        int(800),
-        int(50)
-    )
+    try:
+        pygame.draw.rect(
+            surface,
+            background,
+            (
+                m.appX,
+                m.appY,
+                (800 - 73) * manager.appSize + 73,
+                (800 - 73) * manager.appSize + 73,
+            ),
+            int(800),
+            int(50)
+        )
+    except:
+        pygame.draw.rect(
+            surface,
+            background,
+            (
+                0,
+                0,
+                400,
+                800,
+            ),
+        )
 
     surface.set_alpha(pow(manager.appSize, 0.5) * 256)
 
@@ -171,7 +183,6 @@ def label(text, center=False):
         y = yIndex + manager.appPos[1] * (1 - manager.appSize) - manager.scroll
     else:
         y = yIndex + manager.appPos[1] * (1 - manager.appSize)
-
 
 
     if lastScroll != manager.scroll:
@@ -529,8 +540,8 @@ def button(text, action, color=None, width=None, height=None, posX=None, posY=No
         x + textRect.width + 20 > mouse[0] > x
         and y + textRect.height + 20 > mouse[1] > y
     ):
-        x -= 2
-        y -= 2
+        posX = x - 2
+        posY = y - 2
         textRect.width += 4
         textRect.height += 4
         hover = True

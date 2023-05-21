@@ -114,9 +114,9 @@ while man.running:
 
             man.hasToTakeScreenshot = False
     
-    if man.appSize > 0 or home.isLockscreen == True:
-        clock.tick(60)
-    else:
-        clock.tick(90)
+    #if man.appSize > 0 or home.isLockscreen == True:
+    #    clock.tick(60)
+    # else:
+    #    clock.tick(75)
     
-    #clock.tick(60)
+    # clock.tick(60)

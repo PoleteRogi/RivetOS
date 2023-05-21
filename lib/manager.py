@@ -331,19 +331,29 @@ def init(m):
     style.set_manager(m)
     checkStartupData()
 
+pin = None
+
 def checkStartupData():
-    global guiRender
-    global appSize
+    global pin
+
     startup_data = read_file('../startup.json')
     
     data = json.loads(startup_data)
 
     isSetup = data['setup']
 
+    if data['pin'] != 'nopin':    
+        pin = data['pin']
+
     if isSetup == False:
-        openApp('setup.py', (400 / 2, 800 / 2))
-        guiRender = False
-        appSize = 1
+        openSetup()
+
+def openSetup():
+    global guiRender
+    global appSize
+    openApp('setup.py', (400 / 2, 800 / 2))
+    guiRender = False
+    appSize = 1
 
 def updateStartupData():
     startup_data = read_file('../startup.json')
