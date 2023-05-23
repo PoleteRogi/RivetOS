@@ -643,12 +643,12 @@ def titleBar(text, color=primary):
     xIndex = 15
     yIndex = 45
 
-    x = max(manager.appX, 0)
+    x = manager.appX
     if isScroll:
         y = manager.appY - manager.scroll
     else:
         y = manager.appY - 5
-    width = 400 * manager.appSize + 1
+    width = 1000 * manager.appSize + 1
     height = 75 * manager.appSize + 5
 
     rect = rectShadow.get_rect()
@@ -663,7 +663,7 @@ def titleBar(text, color=primary):
         manager.screen.blit(shadowScaled, rect)
 
     #pygame.draw.rect(manager.screen, color, (x, y, width, height), border_radius=int(50 * (1 - manager.appSize)))
-    pygame.draw.rect(manager.screen, color, (x, y, width, height))
+    pygame.draw.rect(manager.screen, color, (x, y, width, height), border_top_left_radius=50, border_top_right_radius=50)
     pygame.draw.rect(manager.screen, modify_color(color, 0.8), (x, y + height - 1, width, 1))
 
     if color == BLACK or color == GREEN or color == RED or color == BLUE:

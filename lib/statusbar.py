@@ -1,3 +1,4 @@
+import psutil
 import pygame
 import lib.style as style
 from datetime import datetime
@@ -98,15 +99,80 @@ def renderNotifications():
     if notificationShowValue != 0 and notificationShowValue != notificationShowValueGoal:
         manager.updateScreen()
 
+def renderControlCenter():
+    backgroundS = pygame.Surface((400, 800), pygame.SRCALPHA)     
+    backgroundS.fill((255, 255, 255))
+
+    foregroundS = pygame.Surface((400, 800), pygame.SRCALPHA)     
+
+    if manager.isInApp == False:
+        backgroundS.set_alpha(200 * manager.appSize)
+        foregroundS.set_alpha(256 * manager.appSize)
+    else:
+        if controlCenterOpened:
+            backgroundS.set_alpha(200)
+            foregroundS.set_alpha(256)
+        else:
+            backgroundS.set_alpha(0)
+            foregroundS.set_alpha(0)
+
+    now = datetime.now()
+
+    time = now.strftime("%H:%M")
+
+    timeText = normalFont.render(time, True, style.foreground)
+
+    timeTextRect = timeText.get_rect()
+    timeTextRect.center = (400 // 2, 30)
+
+    foregroundS.blit(timeText, timeTextRect)
+
+    battery = psutil.sensors_battery()
+
+    percent = str(battery.percent)
+
+    percentText = normalFont.render(percent + '%', True, style.foreground)
+
+    percentTextRect = percentText.get_rect()
+    percentTextRect.right = 400 - 60
+    percentTextRect.centery = 60 // 2
+
+    foregroundS.blit(percentText, percentTextRect)
+
+    index = 0
+
+    for notification in manager.notifications:
+        NOTIFICATION_WIDTH = 360
+        NOTIFICATION_HEIGHT = 100
+        NOTIFICATION_X = (400 / 2 - NOTIFICATION_WIDTH / 2)
+        NOTIFICATION_Y = 60 + index * (NOTIFICATION_HEIGHT + 10)
+
+        pygame.draw.rect(foregroundS, style.WHITE, (NOTIFICATION_X, NOTIFICATION_Y, NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT), border_radius=10)
+
+        pygame.draw.rect(foregroundS, style.modify_color(style.WHITE, 0.8), (NOTIFICATION_X, NOTIFICATION_Y, NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT), width=1, border_radius=10)
+
+        titleText = titleFont.render(notification.title, True, style.BLACK)
+        foregroundS.blit(titleText, (NOTIFICATION_X + 20, NOTIFICATION_Y + 20))
+
+        contentText = normalFont.render(notification.text, True, style.BLACK)
+        foregroundS.blit(contentText, (NOTIFICATION_X + 20, NOTIFICATION_Y + 20 + 18 + 10))
+
+        index += 1
+
+    manager.screen.blit(backgroundS, (0, 0))
+    manager.screen.blit(foregroundS, (0, 0))
+
+controlCenterOpened = False
+
 def render(home, screen, events):
-    global showCenter
+    global controlCenterOpened
     now = datetime.now()
     
     # if manager.isInApp:
         # pygame.draw.rect(manager.screen, style.background, (0, 0, 400, 30))
 
     if notificationShowValue < 0.5:
-        if home.isLockscreen == False:
+        if home.isLockscreen == False and controlCenterOpened == False:
             time = now.strftime("%H:%M")
 
             timeText = normalFont.render(time, True, style.foreground)
@@ -116,20 +182,37 @@ def render(home, screen, events):
 
             screen.blit(timeText, timeTextRect)
 
-        # battery = psutil.sensors_battery()
+    battery = psutil.sensors_battery()
 
-        # plugged = battery.power_plugged
-        # percent = str(battery.percent)
-        
-        # if plugged == False:
-        #     percentText = normalFont.render(percent + '%', True, style.background)
-        # else:
-        #     percentText = normalFont.render('✚ ' + percent + '%', True, style.background)
-        # percentTextRect = percentText.get_rect()
-        # percentTextRect.right = 400 - 8
-        # percentTextRect.centery = 30 // 2
+    percent = str(battery.percent)
+    
+    percentText = normalFont.render(percent + '%', True, style.foreground)
 
-        # screen.blit(percentText, percentTextRect)
+    percentTextRect = percentText.get_rect()
+    percentTextRect.right = 400 - 8
+    percentTextRect.centery = 30 // 2
+
+    if controlCenterOpened == False:
+        screen.blit(percentText, percentTextRect)
+
+    mouse = pygame.mouse.get_pos()
+
+    barLimit = 30
+
+    if controlCenterOpened == True:
+        barLimit = 800
+
+    for event in events:
+        if event.type == pygame.MOUSEBUTTONDOWN and mouse[1] <= barLimit:
+            controlCenterOpened = not controlCenterOpened
+
+            if controlCenterOpened:
+                manager.appSizeGoal = 1
+            else:
+                if manager.isInApp == False:
+                    manager.appSizeGoal = 0
+
+    renderControlCenter()
 
     renderNotifications()
 

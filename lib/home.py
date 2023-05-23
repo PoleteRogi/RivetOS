@@ -191,8 +191,26 @@ def render(screen, events, manager):
             trBlack = pygame.Surface((400, 800), pygame.SRCALPHA)     
             trBlack.fill((0, 0, 0))
             trBlack.set_alpha((wallpaperScale - 1) / 0.75 * 200)
-            s.blit(trBlack, (0, 0))
 
+            # 0, 1, 2
+            pygame.draw.rect(trBlack, (255, 255, 255), (60, 400, 85, 50), 30, 23)
+            pygame.draw.rect(trBlack, (255, 255, 255), (400 - 85 - 60, 400, 85, 50), 30, 23)
+            pygame.draw.rect(trBlack, (255, 255, 255), (400 / 2 - 85 / 2, 400, 85, 50), 30, 23)
+
+            # 3, 4, 5
+            pygame.draw.rect(trBlack, (255, 255, 255), (60, 400 + 50 + 50, 85, 50), 30, 23)
+            pygame.draw.rect(trBlack, (255, 255, 255), (400 - 85 - 60, 400 + 50 + 50, 85, 50), 30, 23)
+            pygame.draw.rect(trBlack, (255, 255, 255), (400 / 2 - 85 / 2, 400 + 50 + 50, 85, 50), 30, 23)
+
+            # 6, 7, 8
+            pygame.draw.rect(trBlack, (255, 255, 255), (60, 400 + 50 + 50, 85, 50), 30, 23)
+            pygame.draw.rect(trBlack, (255, 255, 255), (400 - 85 - 60, 400 + 50 + 50, 85, 50), 30, 23)
+            pygame.draw.rect(trBlack, (255, 255, 255), (400 / 2 - 85 / 2, 400 + 50 + 50, 85, 50), 30, 23)
+
+            # 9
+            pygame.draw.rect(trBlack, (255, 255, 255), (400 / 2 - 85 / 2, 400 + 50 + 50 + 50 + 50, 85, 50), 30, 23)
+
+            s.blit(trBlack, (0, 0))
             
             enterYourPinText = pygame.font.Font(style.TEXT_REGULAR, 16).render('Please enter your pin', True, style.WHITE)
 
@@ -200,7 +218,6 @@ def render(screen, events, manager):
             enterYourPinTextRect.center = (400 // 2, (wallpaperScale - 1) / 0.75 * (400 // 2))
 
             s.blit(enterYourPinText, enterYourPinTextRect)
-            
 
         if isInPinLock == False:
             wallpaperScaleGoal = 1.1 + math.sin(sin / 100) * 0.1
@@ -316,7 +333,7 @@ def render(screen, events, manager):
                     # x = manager.appPos[0] * (1 - manager.appSize)
                 
                 else: 
-                    if manager.appSize > 0.00001:
+                    if manager.appSize > 0.000001:
                         renderAppsAfter = False
 
                 if lastHovers[index] != hover:
