@@ -1,4 +1,4 @@
-import psutil
+#import psutil
 import pygame
 import lib.style as style
 from datetime import datetime
