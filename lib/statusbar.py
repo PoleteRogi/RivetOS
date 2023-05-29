@@ -1,4 +1,3 @@
-#import psutil
 import pygame
 import lib.style as style
 from datetime import datetime
@@ -123,9 +122,10 @@ def renderControlCenter():
 
     foregroundS.blit(timeText, timeTextRect)
 
-    battery = psutil.sensors_battery()
+    # battery = psutil.sensors_battery()
 
-    percent = str(battery.percent)
+    # percent = str(battery.percent)
+    percent = '100'
 
     percentText = normalFont.render(percent + '%', True, style.foreground)
 
