@@ -160,3 +160,4 @@ cython_debug/
 
 /data/libraries.txt
 /data/tmp/*
+/data/fs/camera/*

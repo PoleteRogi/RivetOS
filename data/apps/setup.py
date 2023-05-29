@@ -18,6 +18,15 @@ def init(m):
     m.setTimeout(whatIsYourNamePage, 5000)
     pass
 
+def lerp(a: float, b: float, t: float) -> float:
+    """Linear interpolate on the scale given by a to b, using t as the point on that scale.
+    Examples
+    --------
+        50 == lerp(0, 100, 0.5)
+        4.2 == lerp(1, 5, 0.8)
+    """
+    return (1 - t) * a + t * b
+
 def setup(m):
     global xIndex
     global yIndex
@@ -44,7 +53,7 @@ def setup(m):
 
         print(m.charIndex)
 
-        set_foreground(modify_color(foreground, max(8 - (m.charIndex / 6 * 10), 1)))
+        set_foreground((lerp(WHITE[0], BLACK[0], m.charIndex / 6), lerp(WHITE[1], BLACK[1], m.charIndex / 6), lerp(WHITE[2], BLACK[2], m.charIndex / 6)))
         label(text, center=True)
         set_foreground(foreground)
 

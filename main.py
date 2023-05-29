@@ -118,5 +118,3 @@ while man.running:
     #    clock.tick(60)
     # else:
     #    clock.tick(75)
-    
-    # clock.tick(60)

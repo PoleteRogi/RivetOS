@@ -471,7 +471,7 @@ def textArea(text, width, height):
     if direction == "y":
         yIndex += textRect.height + 20 + margin[1]
 
-def button(text, action, color=None, width=None, height=None, posX=None, posY=None, borderRadius=10):
+def button(text, action, color=None, width=None, height=None, posX=None, posY=None, borderRadius=10, clickup=None):
     global xIndex
     global yIndex
     global foreground
@@ -536,20 +536,6 @@ def button(text, action, color=None, width=None, height=None, posX=None, posY=No
     
     clicked = False
 
-    if (
-        x + textRect.width + 20 > mouse[0] > x
-        and y + textRect.height + 20 > mouse[1] > y
-    ):
-        posX = x - 2
-        posY = y - 2
-        textRect.width += 4
-        textRect.height += 4
-        hover = True
-    else:
-        pass
-
-    manager.updateScreen()
-    
     if posX == None:
         x = xIndex + manager.appPos[0] * (1 - manager.appSize)
         if isScroll:
@@ -562,6 +548,20 @@ def button(text, action, color=None, width=None, height=None, posX=None, posY=No
             y = posY * (manager.appSize) - manager.scroll
         else:
             y = posY * (manager.appSize)
+
+    if (
+        x + textRect.width + 20 > mouse[0] > x
+        and y + textRect.height + 20 > mouse[1] > y
+    ):
+        x = x - 2
+        y = y - 2
+        textRect.width += 4
+        textRect.height += 4
+        hover = True
+    else:
+        pass
+
+    manager.updateScreen()
 
     if borderRadius < 100:
         rect = buttonShadow.get_rect()
@@ -601,8 +601,8 @@ def button(text, action, color=None, width=None, height=None, posX=None, posY=No
     # manager.screen.blit(borderSurface, (0, 0))
 
     if hover:
-        x += 2
-        y += 2
+        # x += 2
+        # y += 2
 
         if click[0] == 1:
             if action != None:
@@ -614,9 +614,12 @@ def button(text, action, color=None, width=None, height=None, posX=None, posY=No
 
     if clicked:
         if color == None:
-            pygame.draw.rect(manager.screen, modify_color(primary, 0.8), (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), 10)
+            pygame.draw.rect(manager.screen, modify_color(primary, 0.8), (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), borderRadius)
         else:
-            pygame.draw.rect(manager.screen, modify_color(color, 0.8), (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), 10)
+            pygame.draw.rect(manager.screen, modify_color(color, 0.8), (x, y, textRect.width + 20, textRect.height + 20), round((textRect.height + 20) / 2), borderRadius)
+    else:
+        if clickup != None:
+            clickup(manager)
 
     if hover:
         textRect.width -= 4
@@ -663,7 +666,7 @@ def titleBar(text, color=primary):
         manager.screen.blit(shadowScaled, rect)
 
     #pygame.draw.rect(manager.screen, color, (x, y, width, height), border_radius=int(50 * (1 - manager.appSize)))
-    pygame.draw.rect(manager.screen, color, (x, y, width, height), border_top_left_radius=50, border_top_right_radius=50)
+    pygame.draw.rect(manager.screen, color, (x, y, width, height))
     pygame.draw.rect(manager.screen, modify_color(color, 0.8), (x, y + height - 1, width, 1))
 
     if color == BLACK or color == GREEN or color == RED or color == BLUE:

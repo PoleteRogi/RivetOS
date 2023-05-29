@@ -105,16 +105,12 @@ def renderControlCenter():
 
     foregroundS = pygame.Surface((400, 800), pygame.SRCALPHA)     
 
-    if manager.isInApp == False:
-        backgroundS.set_alpha(200 * manager.appSize)
-        foregroundS.set_alpha(256 * manager.appSize)
+    if controlCenterOpened:
+        backgroundS.set_alpha(225)
+        foregroundS.set_alpha(256)
     else:
-        if controlCenterOpened:
-            backgroundS.set_alpha(200)
-            foregroundS.set_alpha(256)
-        else:
-            backgroundS.set_alpha(0)
-            foregroundS.set_alpha(0)
+        backgroundS.set_alpha(0)
+        foregroundS.set_alpha(0)
 
     now = datetime.now()
 
@@ -199,18 +195,9 @@ def render(home, screen, events):
 
     barLimit = 30
 
-    if controlCenterOpened == True:
-        barLimit = 800
-
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN and mouse[1] <= barLimit:
             controlCenterOpened = not controlCenterOpened
-
-            if controlCenterOpened:
-                manager.appSizeGoal = 1
-            else:
-                if manager.isInApp == False:
-                    manager.appSizeGoal = 0
 
     renderControlCenter()
 

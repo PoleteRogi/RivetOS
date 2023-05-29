@@ -16,10 +16,10 @@ def render(m):
         keyboardPosScaleGoal = 0
 
     if keyboardPosScale < keyboardPosScaleGoal:
-        keyboardPosScale += (keyboardPosScaleGoal - keyboardPosScale) / 10
+        keyboardPosScale += (keyboardPosScaleGoal - keyboardPosScale) / 5
 
     if keyboardPosScale > keyboardPosScaleGoal:
-        keyboardPosScale -= (keyboardPosScale - keyboardPosScaleGoal) / 10
+        keyboardPosScale -= (keyboardPosScale - keyboardPosScaleGoal) / 5
 
     if keyboardPosScale >= 0.999:
         keyboardPosScale = 1

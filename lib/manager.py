@@ -43,6 +43,8 @@ webcam = None
 
 hasToTakeScreenshot = False
 
+lastImage = None
+
 class Notification:
     def __init__(self, app, title, text):
         self.app = app
