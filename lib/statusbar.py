@@ -178,10 +178,11 @@ def render(home, screen, events):
 
             screen.blit(timeText, timeTextRect)
 
-    battery = psutil.sensors_battery()
+    # battery = psutil.sensors_battery()
 
-    percent = str(battery.percent)
-    
+    #percent = str(battery.percent)
+    percent = '100'
+
     percentText = normalFont.render(percent + '%', True, style.foreground)
 
     percentTextRect = percentText.get_rect()
