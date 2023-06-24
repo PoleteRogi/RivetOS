@@ -1,6 +1,8 @@
 import pygame
 import lib.style as style
 import json
+from os import listdir
+from os.path import isfile, join
 
 openApps = []
 appsMemory = []
@@ -24,6 +26,8 @@ isInInput = False
 
 alertOpacity = 0
 alertOpacityGoal = 0
+
+hasLoadedGallery = False
 
 # DYNAMIC FPS. THIS FPS VALUE CHANGES WHEN LOOKING AT STATIC THINGS TO LOW FPS
 fps = 60
@@ -54,6 +58,7 @@ class Notification:
 notifications = []
 
 scroll = 0
+scrollX = 0
 
 import os
 import sys
@@ -82,7 +87,7 @@ def openApp(name, pos):
     global isInApp
     global appPos
     global scroll
-    global velocity
+    global velocityY
 
     appPos = pos
 
@@ -102,13 +107,15 @@ def openApp(name, pos):
 
     style.RESET()
 
-    velocity = 0
+    velocityY = 0
+    velocityX = 0
 
     scroll = 0
 lastMousePos = (0, 0)
 lastLastMousePos = (0, 0)
 lastClick = 0
-velocity = 0
+velocityY = 0
+velocityX = 0
 
 def update():
     global appSize
@@ -121,7 +128,9 @@ def update():
     global lastLastMousePos
     global lastClick
     global scroll
-    global velocity
+    global scrollX
+    global velocityY
+    global velocityX
 
     if appSize < appSizeGoal:
         appSize += (appSizeGoal - appSize) / 5
@@ -177,31 +186,69 @@ def update():
 
     if click[0] == 1 and lastLastMousePos != mouse[1]:
         lastLastMousePos = mouse[1]
-        velocity = round(0 - (lastLastMousePos - lastMousePos[1]) / 20)
-
+        velocityY = round(0 - (lastLastMousePos - lastMousePos[1]) / 20)
+    else:
+        lastMousePos = mouse
+    if click[0] == 1 and lastLastMousePos != mouse[0]:
+        lastLastMousePos = mouse[0]
+        velocityX = round(0 - (lastLastMousePos - lastMousePos[0]) / 10)
     else:
         lastMousePos = mouse
 
     if click[0] != 1:
-        if velocity > 0:
-            velocity -= 0.5
-        elif velocity < 0:
-            velocity += 0.5
+        if velocityY > 0:
+            velocityY -= 0.5
+        elif velocityY < 0:
+            velocityY += 0.5
+
+        if velocityX > 0:
+            velocityX -= 0.5
+        elif velocityX < 0:
+            velocityX += 0.5
 
         if scroll < 0:
-            velocity = (0 - scroll) / 10
+            velocityY = (0 - scroll) / 10
 
-        velocity = round(velocity * 10) / 10
+        if scrollX < 0:
+            velocityX = (0 - scrollX) / 10
 
-        scroll += round(velocity)
+        if scrollX > 400:
+            velocityX = (400 - scrollX) / 10
+
+        velocityY = round(velocityY * 10) / 10
+
+        velocityX = round(velocityX * 10) / 10
+
+        scroll += round(velocityY)
+        scrollX += round(velocityX)
 
     scroll += round((lastMousePos[1] - mouse[1]) / 30)
+    scrollX += round((lastMousePos[0] - mouse[0]) / 30)
+
+    if click[0] != 1:
+        if scroll <= 0 and velocityY <= 0.5:
+            scroll = lerp(scroll, 0, 0.1)
+            velocityY = lerp(velocityY, 0, 0.1)
+
+        if scrollX <= 0 and velocityX <= 0.5:
+            scrollX = lerp(scrollX, 0, 0.1)
+            velocityX = lerp(velocityX, 0, 0.1)
+
+def lerp(a: float, b: float, t: float) -> float:
+    """Linear interpolate on the scale given by a to b, using t as the point on that scale.
+    Examples
+    --------
+        50 == lerp(0, 100, 0.5)
+        4.2 == lerp(1, 5, 0.8)
+    """
+    return (1 - t) * a + t * b
 
 def closeApp(name):
     global openApps
     global isInApp
     global appSizeGoal
     global isInInput
+    global scrollX
 
     openApps.remove(name)
     isInApp = False
@@ -213,6 +260,8 @@ def closeApp(name):
 
     if onClose != None:
         onClose()
+
+    scrollX = 0
 
 def closeAllApps():
     global openApps
@@ -328,6 +377,11 @@ def write_file(file, content):
         return True
     except:
         return False
+    
+def file_list(path):
+    onlyfiles = [f for f in listdir('./data/fs/' + path) if isfile(join('./data/fs/' + path, f))]
+
+    return onlyfiles
 
 def init(m):
     style.set_manager(m)

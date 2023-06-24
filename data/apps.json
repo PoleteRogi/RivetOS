@@ -28,5 +28,11 @@
         "icon": "Camera.png",
         "version": "1.0",
         "file": "camera.py"
+    },
+    {
+        "name": "Gallery",
+        "icon": "Pictures.png",
+        "version": "1.0",
+        "file": "gallery.py"
     }
 ]

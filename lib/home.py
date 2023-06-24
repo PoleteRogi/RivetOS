@@ -137,12 +137,12 @@ def render(screen, events, manager):
     if manager.appSize < 0.00001:
         s.blit(
             wallpaperScaled,
-            (400 / 2 - 400 * wallpaperScale / 2, 800 / 2 - 800 * wallpaperScale / 2),
+            (400 / 2 - 400 * wallpaperScale / 2 - (manager.scrollX / 12), 800 / 2 - 800 * wallpaperScale / 2),
         )
     else:
         s.blit(
             wallpaperScaled,
-            (400 / 2 - 400 * (wallpaperScale - 0.2) / 2, 800 / 2 - 800 * (wallpaperScale - 0.2) / 2),
+            (400 / 2 - 400 * (wallpaperScale - 0.2) / 2 - (manager.scrollX / 12), 800 / 2 - 800 * (wallpaperScale - 0.2) / 2),
         )
 
         realWallpaperScaled = pygame.transform.scale(
@@ -281,7 +281,12 @@ def render(screen, events, manager):
                     (column * columnsize + 10 * 4) * iconScale
                     + (columnsize / 2)
                     - (iconsize / 2)
+                    - manager.scrollX
                 )
+
+                if manager.isInApp == False:
+                    wallpaperScaleGoal = 1.2 - manager.scrollX / 20000
+
                 originY = (row * rowsize + 10 * 4) + (rowsize / 2) - (iconsize / 2)
 
                 x = originX
@@ -305,6 +310,10 @@ def render(screen, events, manager):
                     iconshadowscaled = pygame.transform.scale(iconshadow, (iconsize + 19, iconsize + 19))
                     if click[0] == 1:
                         appPos = (originX + iconsize / 2, originY + iconsize / 2)
+                        iconsize = 63
+                        x += 10
+                        y += 10
+                        iconshadowscaled = pygame.transform.scale(iconshadow, (iconsize + 19, iconsize + 19))
                         # OPEN APP
                         manager.openApp(file, appPos)
                         wallpaperScaleGoal = 2
@@ -396,5 +405,21 @@ def render(screen, events, manager):
                 if column > 2:
                     column = 0
                     row += 1
+
+            if style.iconShadow == None:
+                style.iconShadow = pygame.image.load('./assets/app.png').convert_alpha()
+
+            rect = style.iconShadow.get_rect()
+
+            rect.topleft = (400 + 40 - manager.scrollX - ((100) / 9), 80 * 0.89)
+            rect.width = 100 * 1.2
+            rect.height = 100 * 1.25
+
+            shadowScaled = pygame.transform.scale(style.iconShadow, (rect.width, rect.height))
+
+            s.blit(shadowScaled, rect)
+
+            pygame.draw.rect(s, style.YELLOW, (400 + 40 - manager.scrollX, 80, 100, 100), 50, 100)
+            pygame.draw.rect(s, style.modify_color(style.YELLOW, 0.9), (400 + 40 - manager.scrollX, 80, 100, 100), 1, 100)
 
     screen.blit(s, (0, 0))

@@ -8,6 +8,7 @@ WHITE = (246, 247, 235)
 GREEN = (68, 187, 164)
 RED = (233, 79, 55)
 BLUE = (63, 136, 197)
+YELLOW = (251, 235, 93)
 
 foreground = BLACK
 background = WHITE
@@ -208,7 +209,7 @@ def label(text, center=False):
     if direction == "y":
         yIndex += textRect.height + margin[1]
 
-def image(url, isAlpha=False, size=None, pos=None):
+def image(url, isAlpha=False, size=None, pos=None, raw=None, needsScaling=True):
     global xIndex
     global yIndex
 
@@ -221,12 +222,15 @@ def image(url, isAlpha=False, size=None, pos=None):
     else:
         y = yIndex + manager.appPos[1] * (1 - manager.appSize)
 
-    if isAlpha == False:
-        img = pygame.image.load('./assets/' + url).convert()
+    if raw == None:
+        if isAlpha == False:
+            img = pygame.image.load('./assets/' + url).convert()
+        else:
+            img = pygame.image.load('./assets/' + url).convert_alpha()
     else:
-        img = pygame.image.load('./assets/' + url).convert_alpha()
+        img = raw.convert()
 
-    if size != None:
+    if size != None and needsScaling:
         img = pygame.transform.scale(img, size)
 
     rect = img.get_rect()

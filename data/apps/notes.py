@@ -4,7 +4,7 @@ def init(m):
     m.notesText = m.read_file('notes/notes.txt')
     m.lastNotesText = m.notesText
 
-    # web('https://www.instagram.com/', 0, 50, 400, 700)
+    web('https://www.youtube.com/', 0, 50, 400, 700)
 
 def autosave(m):
     if m.notesText != m.lastNotesText:
